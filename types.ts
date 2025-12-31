@@ -11,9 +11,15 @@ export interface ThesisSection {
   status: 'idle' | 'generating' | 'completed';
 }
 
+export interface Student {
+  name: string;
+  matricule: string;
+}
+
 export interface ThesisMetadata {
   author: string;
-  groupMembers: string[];
+  groupNumber: string;
+  students: Student[];
   speciality: string;
   option: string;
   promotion: string;

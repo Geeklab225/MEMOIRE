@@ -2,58 +2,63 @@
 import { GoogleGenAI, GenerateContentResponse, Type } from "@google/genai";
 import { ThesisSource, ThesisMetadata } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const PRO_MODEL = 'gemini-3-pro-preview';
-const FAST_MODEL = 'gemini-3-flash-preview';
+const FLASH_MODEL = 'gemini-3-flash-preview';
 
 const INFAS_SYSTEM_PROMPT = `
-TU ES UN ASSISTANT ACADÉMIQUE SPÉCIALISÉ DANS LA RÉDACTION DE MÉMOIRES INFAS (CÔTE D’IVOIRE).
-TU DOIS APPLIQUER UNE MÉTHODE DE RÉDACTION ET DES ÉTAPES ACADÉMIQUES FIXES.
+TU ES L'ASSISTANT ACADÉMIQUE EXPERT POUR LA RÉDACTION DE MÉMOIRES INFAS (CÔTE D'IVOIRE).
+TON OBJECTIF : PRODUIRE UN MÉMOIRE SCIENTIFIQUE COMPLET, RIGOUREUX ET CONFORME AU RÉFÉRENTIEL OFFICIEL INFAS.
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-1. LOGIQUE GÉNÉRALE
+1. STRUCTURE DE L'INTRODUCTION (10 POINTS - ORDRE STRICT)
 ━━━━━━━━━━━━━━━━━━━━━━━
-- Mémoire COLLECTIF (5-6 personnes). Style académique, clair, scientifique.
-- Présentation : Les grands titres (INTRODUCTION, DEDICACES, etc.) doivent être SEULS sur leur page.
+Rédige l'introduction en suivant exactement cette progression :
+1. Annonce du problème (définition et constat).
+2. Situation du problème dans un univers vaste (concept global).
+3. Mise en évidence de la gravité (irritation/impact santé publique).
+4. Situation internationale (Europe, France, Asie - données factuelles).
+5. Situation africaine (Généralités Afrique + focus sur DEUX pays spécifiques hors CI).
+6. Situation nationale (Côte d’Ivoire - politiques nationales, PNDS, chiffres).
+7. Situation locale (Le site exact de l'étude : ville, établissement, service).
+8. Question de recherche (claire, précise et découlant du constat).
+9. Objectif général (action globale de l'étude).
+10. Trois (3) ou quatre (4) objectifs spécifiques (doivent être mesurables).
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-2. STRUCTURE DE L’INTRODUCTION (ENTONNOIR OBLIGATOIRE)
+2. JUSTIFICATION DU CHOIX (3 PARTIES OBLIGATOIRES)
 ━━━━━━━━━━━━━━━━━━━━━━━
-Respecter l'ordre :
-1. Annonce du problème
-2. Monde -> Europe (France) -> Asie -> Afrique (Général + 2 pays) -> Côte d'Ivoire -> Local (Site).
-3. Question de recherche, Objectif général, 3-4 Objectifs spécifiques (base pour questionnaire de 20 questions).
+Structure obligatoirement sous ces trois sous-titres distincts :
+- Motivation personnelle (intérêt du groupe pour le sujet).
+- Pertinence scientifique (apport aux connaissances médicales/infirmières).
+- Pertinence sociale (utilité pour la communauté et les patients).
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-3. JUSTIFICATION DU CHOIX DU SUJET
+3. DEUXIÈME PARTIE : NOTRE ÉTUDE
 ━━━━━━━━━━━━━━━━━━━━━━━
-Contenu obligatoire : Motivation personnelle, Pertinence scientifique, Pertinence sociale.
+Détaille rigoureusement la méthodologie INFAS : Site et cadre, Population cible, Critères d'inclusion/exclusion, Type d'étude, Paramètres, Échantillonnage (taille et technique), Outils de collecte, Pré-test, Éthique, Limites.
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-4. DEUXIEME PARTIE : NOTRE ETUDE (PLAN 2-1 FIXE)
+4. RÈGLES DE RÉDACTION
 ━━━━━━━━━━━━━━━━━━━━━━━
-2-1. MATERIEL ET METHODES
-2-1-1. MATERIEL
-2-1-1-1. SITE DE L’ETUDE (Milieu, Géo, Historique ville, Relief, Climat, Végétation, Hydrographie, Pop, Économie, Admin, Infrastructures).
-2-1-1-2. CADRE DE L’ETUDE (Historique, Géo, Champ étude, Services).
-2-1-1-3. POPULATION DE L’ETUDE
-2-1-1-4. CRITERES DE SELECTION (Inclusion / Non inclusion)
-2-1-2. METHODES (Type d’étude, Paramètres, Echantillonnage [Méthode, Technique, Taille], Collecte, Validation/Pré-test, Déroulement, Analyse, Éthique, Limites).
+- Style : Académique, impersonnel ("L'étude démontre...", "Il ressort de..."), scientifique.
+- Titres : Toujours en MAJUSCULES.
+- Questionnaire : L'annexe doit contenir un questionnaire structuré d'environ 20 questions découlant directement des objectifs spécifiques.
+- Contexte : Toujours privilégier les réalités sanitaires et culturelles ivoiriennes.
 `;
 
 export const verifyThesisInfo = async (theme: string, metadata: ThesisMetadata): Promise<{ isReady: boolean; missingInfo?: string }> => {
   const response = await ai.models.generateContent({
-    model: FAST_MODEL,
-    contents: `Analyse ces données pour un mémoire INFAS :
+    model: FLASH_MODEL,
+    contents: `Analyse la validité académique selon le canevas INFAS :
     Thème : ${theme}
     Site : ${metadata.defensePlace}
-    Type d'étude : ${metadata.studyType}
-    Population : ${metadata.population}
-    Effectif : ${metadata.sampleSize}
+    Directeur : ${metadata.supervisor}
+    Promotion : ${metadata.promotion}
+    Antenne : ${metadata.antenne}
     
-    Vérifie s'il manque des informations essentielles pour commencer la rédaction selon le plan INFAS (Site, Type, Population, Effectif). 
-    Réponds en JSON avec "isReady" (boolean) et "missingInfo" (string ou null).`,
+    Réponds en JSON avec "isReady" (boolean) et "missingInfo" (string).`,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -68,16 +73,16 @@ export const verifyThesisInfo = async (theme: string, metadata: ThesisMetadata):
   });
 
   try {
-    return JSON.parse(response.text || '{"isReady": false, "missingInfo": "Erreur de validation"}');
+    return JSON.parse(response.text || '{"isReady": false}');
   } catch {
-    return { isReady: false, missingInfo: "Erreur lors de la validation des données." };
+    return { isReady: false, missingInfo: "Erreur d'analyse. Assurez-vous d'avoir rempli les champs obligatoires." };
   }
 };
 
 export const searchSources = async (theme: string): Promise<{ text: string; sources: ThesisSource[] }> => {
   const response: GenerateContentResponse = await ai.models.generateContent({
-    model: FAST_MODEL,
-    contents: `Recherche des sources académiques réelles (OMS, Ministère de la Santé CI) pour : "${theme}".`,
+    model: FLASH_MODEL,
+    contents: `Recherche des sources officielles (OMS, UNICEF, Ministère Santé Côte d'Ivoire) et des données statistiques mondiales et africaines pour le thème : "${theme}".`,
     config: { tools: [{ googleSearch: {} }] },
   });
 
@@ -90,13 +95,25 @@ export const searchSources = async (theme: string): Promise<{ text: string; sour
 
 export const generatePlan = async (): Promise<string[]> => {
   return [
-    "DEDICACES", "REMERCIEMENTS", "SOMMAIRE", "LISTE DES ABREVIATIONS",
-    "LISTE DES TABLEAUX", "LISTE DES GRAPHIQUES", "LISTE DES REPONSES OU QUESTIONS",
-    "LISTE DES ANNEXES", "INTRODUCTION", "JUSTIFICATION DU CHOIX DU SUJET",
-    "DEFINITION OPERATIONNELLE DES TERMES", "REVUE DE LA LITTERATURE",
-    "DEUXIEME PARTIE : NOTRE ETUDE", "MATERIEL ET METHODES",
-    "PRESENTATION DES RESULTATS", "DISCUSSION", "CONCLUSION",
-    "RECOMMANDATIONS", "REFERENCES", "ANNEXES"
+    "DEDICACES",
+    "REMERCIEMENTS",
+    "SOMMAIRE",
+    "LISTE DES ABREVIATIONS",
+    "LISTE DES TABLEAUX ET FIGURES",
+    "LISTE DES REPONSES ET QUESTIONS",
+    "LISTE DES ANNEXES",
+    "INTRODUCTION (LES 10 POINTS)",
+    "JUSTIFICATION DU CHOIX DU SUJET (PERSONNEL, SCIENTIFIQUE, SOCIAL)",
+    "DEFINITION OPERATIONNELLE DES TERMES",
+    "PREMIERE PARTIE : REVUE DE LA LITTERATURE",
+    "DEUXIEME PARTIE : NOTRE ETUDE (PHASE PRATIQUE)",
+    "PRESENTATION DES RESULTATS",
+    "DISCUSSION DES RESULTATS",
+    "CONCLUSION",
+    "RECOMMANDATIONS",
+    "REFERENCES BIBLIOGRAPHIQUES",
+    "ANNEXES (QUESTIONNAIRE DE 20 QUESTIONS)",
+    "RESUME"
   ];
 };
 
@@ -107,23 +124,40 @@ export const generateSectionContent = async (
   sources: ThesisSource[],
   metadata: ThesisMetadata
 ): Promise<string> => {
+  const sourceContext = sources.map(s => `- ${s.title}: ${s.uri}`).join('\n');
+  const studentsList = metadata.students.map(s => `${s.name} (Matricule: ${s.matricule})`).join(', ');
+  
   const response = await ai.models.generateContent({
     model: PRO_MODEL,
-    contents: `Rédige la section "${sectionTitle}" pour le mémoire INFAS :
-    Thème : ${theme}
-    Site : ${metadata.defensePlace} (EPHR/CHR/Centre de santé)
-    Membres du groupe : ${metadata.groupMembers.join(', ')}
-    Type d'étude : ${metadata.studyType}
-    Population : ${metadata.population}
-    Effectif : ${metadata.sampleSize}
-    Antenne : ${metadata.antenne}
+    contents: `
+    RÉDIGE LE CHAPITRE : ${sectionTitle.toUpperCase()}
     
-    Contexte précédent : ${previousContent.slice(-1000)}`,
+    PARAMÈTRES DU MÉMOIRE :
+    Thème : ${theme}
+    Site : ${metadata.defensePlace}
+    Antenne : ${metadata.antenne}
+    Promotion : ${metadata.promotion}
+    Groupe N° : ${metadata.groupNumber}
+    Étudiants : ${studentsList}
+    Directeur : ${metadata.supervisor}
+    
+    EXIGENCES :
+    - Si INTRODUCTION : Développer obligatoirement les 10 points (Mondial -> Afrique -> CI -> Local -> Question -> Objectifs).
+    - Si JUSTIFICATION : Diviser en Motivation Personnelle, Pertinence Scientifique et Pertinence Sociale.
+    - Si NOTRE ETUDE : Détailler population, échantillonnage, pré-test et éthique selon le canevas INFAS.
+    - Si ANNEXES : Créer un questionnaire complet d'environ 20 questions numérotées.
+    
+    SOURCES À INTÉGRER :
+    ${sourceContext}
+    
+    HISTORIQUE DE RÉDACTION (pour cohérence) :
+    ${previousContent.slice(-2000)}
+    `,
     config: {
       systemInstruction: INFAS_SYSTEM_PROMPT,
-      thinkingConfig: { thinkingBudget: 8000 }
+      thinkingConfig: { thinkingBudget: 15000 }
     }
   });
 
-  return response.text || "";
+  return response.text || "Erreur lors de la génération du contenu scientifique.";
 };
