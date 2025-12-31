@@ -1,0 +1,5 @@
+{
+  "name": "Copy of INFAS Mémoire AI Assistant",
+  "description": "Assistant intelligent pour la rédaction de mémoires de fin de formation des agents de santé de l'INFAS, avec recherche de sources réelles via Google Search et export Word/PDF.",
+  "requestFramePermissions": []
+}
