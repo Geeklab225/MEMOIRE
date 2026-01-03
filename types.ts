@@ -16,6 +16,12 @@ export interface Student {
   matricule: string;
 }
 
+export interface DeducedLogic {
+  question: string;
+  objectiveGeneral: string;
+  objectivesSpecific: string[];
+}
+
 export interface ThesisMetadata {
   author: string;
   groupNumber: string;
@@ -42,4 +48,5 @@ export interface ThesisData {
   sources: ThesisSource[];
   plan: string[];
   sections: ThesisSection[];
+  deducedLogic?: DeducedLogic;
 }

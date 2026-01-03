@@ -16,7 +16,8 @@ export const exportToPDF = (data: ThesisData) => {
     pdfDoc.setTextColor(150, 150, 150);
     const themeTrim = data.theme.length > 80 ? data.theme.substring(0, 80) + "..." : data.theme;
     pdfDoc.text(themeTrim.toUpperCase(), pageWidth / 2, 10, { align: "center", maxWidth: contentWidth });
-    const footerText = `Mémoire INFAS – Antenne ${data.metadata.antenne} – Promotion ${data.metadata.promotion} – Page ${pdfDoc.internal.getNumberOfPages()}`;
+    // Fix: Using getNumberOfPages directly on the doc instance instead of internal
+    const footerText = `Mémoire INFAS – Antenne ${data.metadata.antenne} – Promotion ${data.metadata.promotion} – Page ${pdfDoc.getNumberOfPages()}`;
     pdfDoc.text(footerText, pageWidth / 2, pageHeight - 10, { align: "center" });
     pdfDoc.setTextColor(0, 0, 0);
   };
@@ -225,7 +226,8 @@ export const exportToWord = async (data: ThesisData) => {
       s.content.split('\n').filter(l => l.trim() !== "").forEach(l => {
         children.push(new Paragraph({ 
           children: [new TextRun({ text: l, size: 24 })],
-          alignment: AlignmentType.JUSTIFY,
+          // Fix: AlignmentType property is JUSTIFIED not JUSTIFY
+          alignment: AlignmentType.JUSTIFIED,
           spacing: { before: 240, after: 240 },
           indent: { firstLine: 720 }
         }));
@@ -241,7 +243,8 @@ export const exportToWord = async (data: ThesisData) => {
       headers: {
         default: new Header({
           children: [new Paragraph({ 
-            children: [new TextRun({ text: data.theme.toUpperCase(), size: 16, italic: true })], 
+            // Fix: TextRun option is italics not italic
+            children: [new TextRun({ text: data.theme.toUpperCase(), size: 16, italics: true })], 
             alignment: AlignmentType.CENTER 
           })],
         }),
