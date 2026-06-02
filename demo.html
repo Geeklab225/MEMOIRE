@@ -13,495 +13,793 @@
 </script>
 <style>
   body { font-family: 'Inter', sans-serif; background: #0f172a; }
-  .phone { width: 375px; min-height: 812px; border-radius: 40px; border: 8px solid #1e293b; box-shadow: 0 40px 80px rgba(0,0,0,.6), inset 0 0 0 1px #334155; overflow: hidden; background: #f9fafb; display: flex; flex-direction: column; }
-  .screen { flex: 1; overflow: hidden; background: #f9fafb; }
-  .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .phone { width: 375px; border-radius: 40px; border: 8px solid #1e293b; box-shadow: 0 40px 80px rgba(0,0,0,.6), inset 0 0 0 1px #334155; overflow: hidden; background: #f9fafb; }
+  .screen { background: #f9fafb; }
+  .tab-btn.active { border-bottom: 2px solid; }
+  .badge { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 6px; text-transform: uppercase; }
 </style>
 </head>
-<body class="min-h-screen p-8">
+<body class="min-h-screen p-6">
 
 <div class="text-center mb-10">
   <h1 class="text-4xl font-black text-white mb-2">🛵 Abengourou Express</h1>
-  <p class="text-slate-400 text-lg">Application de livraison & courses — Abengourou, Côte d'Ivoire</p>
+  <p class="text-slate-400 text-lg">Application 4 rôles — Abengourou, Côte d'Ivoire</p>
+  <div class="flex gap-3 justify-center mt-4 flex-wrap">
+    <span class="bg-green-900/50 text-green-300 px-3 py-1 rounded-full text-sm font-bold">👤 Client</span>
+    <span class="bg-blue-900/50 text-blue-300 px-3 py-1 rounded-full text-sm font-bold">🛵 Livreur</span>
+    <span class="bg-emerald-900/50 text-emerald-300 px-3 py-1 rounded-full text-sm font-bold">🏪 Fournisseur</span>
+    <span class="bg-gray-700/80 text-gray-300 px-3 py-1 rounded-full text-sm font-bold">🏢 Admin</span>
+  </div>
 </div>
 
 <div class="flex flex-wrap gap-8 justify-center">
 
-  <!-- SCREEN 1: HOME CLIENT -->
-  <div>
-    <p class="text-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">👤 Interface Client — Accueil</p>
-    <div class="phone">
-      <!-- Demo bar -->
-      <div class="bg-gray-900 px-4 py-2 flex gap-2 justify-center">
-        <span class="px-3 py-1 rounded-full text-xs font-black bg-white text-gray-900">👤 Client</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🛵 Livreur</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🏢 Admin</span>
+<!-- ══════════════════════════════════════════════════════════
+     ÉCRAN 1 — CLIENT ACCUEIL
+     ══════════════════════════════════════════════════════════ -->
+<div>
+  <p class="text-slate-400 text-xs font-bold uppercase tracking-widest text-center mb-3">👤 Client — Accueil</p>
+  <div class="phone">
+    <div class="screen">
+      <!-- Role bar -->
+      <div class="bg-gray-900 px-2 py-1.5 flex gap-1 justify-center">
+        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-[10px] font-black">👤 Client</span>
+        <span class="text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold">🛵 Livreur</span>
+        <span class="text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold">🏪 Fournisseur</span>
+        <span class="text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold">🏢 Admin</span>
       </div>
       <!-- Header -->
-      <div class="bg-green-600 text-white px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-2"><span class="text-xl">🛵</span><div><p class="font-black text-sm">Abengourou Express</p><p class="text-[10px] text-green-200">Livraison & Courses rapides</p></div></div>
-        <div class="flex gap-2"><div class="p-2 bg-white/10 rounded-xl relative"><span>🛒</span><span class="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">2</span></div></div>
-      </div>
-      <!-- Hero -->
-      <div class="bg-gradient-to-br from-green-600 to-green-800 px-4 pt-4 pb-10">
-        <p class="text-green-200 text-xs mb-1">📍 Abengourou, Côte d'Ivoire</p>
-        <h2 class="text-white text-xl font-black mb-4">Que souhaitez-vous<br>recevoir aujourd'hui ?</h2>
-        <div class="relative bg-white rounded-2xl px-3 py-3 flex items-center gap-2 shadow-xl">
-          <span class="text-gray-400">🔍</span>
-          <span class="text-gray-300 text-sm">Chercher un restaurant, pharmacie...</span>
+      <div class="bg-green-600 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🛵</span>
+          <div>
+            <p class="text-white font-black text-sm leading-none">Abengourou Express</p>
+            <p class="text-green-200 text-[10px]">Livraison & Courses rapides</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="bg-white/10 p-1.5 rounded-lg relative">
+            <span class="text-white text-sm">🛒</span>
+            <span class="absolute -top-1 -right-1 bg-orange-500 text-white text-[8px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">2</span>
+          </div>
+          <div class="bg-white/10 p-1.5 rounded-lg">
+            <span class="text-white text-sm">🔔</span>
+          </div>
         </div>
       </div>
-      <!-- Content -->
-      <div class="px-4 -mt-4 pb-4">
-        <!-- 2 service cards -->
-        <div class="grid grid-cols-2 gap-3 mb-4">
+      <!-- Hero -->
+      <div class="bg-gradient-to-br from-green-600 to-green-800 px-4 pt-4 pb-12">
+        <p class="text-green-200 text-xs font-semibold mb-1">📍 Abengourou, Côte d'Ivoire</p>
+        <h1 class="text-white text-xl font-black leading-tight mb-4">Que souhaitez-vous<br/>recevoir aujourd'hui ?</h1>
+        <div class="bg-white rounded-xl px-3 py-2.5 flex items-center gap-2">
+          <span class="text-gray-400 text-sm">🔍</span>
+          <span class="text-gray-400 text-sm">Chercher un restaurant, pharmacie...</span>
+        </div>
+      </div>
+      <!-- Service cards -->
+      <div class="px-4 -mt-6 space-y-4">
+        <div class="grid grid-cols-2 gap-3">
           <div class="bg-white rounded-2xl p-4 shadow-md border border-gray-100">
             <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-2 text-xl">🛍️</div>
-            <p class="font-black text-gray-900 text-xs">Commander en ligne</p>
-            <p class="text-[10px] text-gray-400 mt-0.5">Choisissez parmi nos commerces</p>
+            <p class="font-black text-gray-900 text-xs leading-tight">Commander en ligne</p>
+            <p class="text-[10px] text-gray-400 mt-1 leading-tight">Choisissez parmi nos commerces</p>
           </div>
           <div class="bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl p-4 shadow-md">
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-2 text-xl">🛒</div>
-            <p class="font-black text-white text-xs">Faire mes courses</p>
-            <p class="text-[10px] text-white/80 mt-0.5">Notre livreur fait vos achats</p>
+            <p class="font-black text-white text-xs leading-tight">Faire mes courses</p>
+            <p class="text-[10px] text-white/80 mt-1 leading-tight">Notre livreur fait vos achats</p>
           </div>
-        </div>
-        <!-- How it works -->
-        <div class="bg-orange-50 border border-orange-100 rounded-2xl p-3 mb-4">
-          <p class="font-black text-orange-800 text-xs mb-1">🛒 Comment ça marche ?</p>
-          <p class="text-[10px] text-orange-700">1️⃣ Envoyez votre liste de courses</p>
-          <p class="text-[10px] text-orange-700">2️⃣ Déposez le montant + frais</p>
-          <p class="text-[10px] text-orange-700">3️⃣ Le livreur fait vos achats</p>
-          <p class="text-[10px] text-orange-700">4️⃣ Livraison + rendu de monnaie</p>
         </div>
         <!-- Categories -->
-        <div class="flex gap-2 overflow-x-auto pb-1 mb-3">
-          <div class="flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-green-600 text-white"><span class="text-base">🏪</span><span class="text-[9px] font-bold">Tout</span></div>
-          <div class="flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-white border border-gray-100"><span class="text-base">🍽️</span><span class="text-[9px] font-bold text-gray-600">Restau</span></div>
-          <div class="flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-white border border-gray-100"><span class="text-base">💊</span><span class="text-[9px] font-bold text-gray-600">Pharma</span></div>
-          <div class="flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-white border border-gray-100"><span class="text-base">🛒</span><span class="text-[9px] font-bold text-gray-600">Super</span></div>
-        </div>
-        <!-- Featured -->
-        <p class="font-black text-gray-900 text-sm mb-2">⭐ En vedette</p>
-        <div class="flex gap-3 overflow-x-auto pb-2">
-          <div class="flex-shrink-0 w-40">
-            <div class="h-24 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center text-4xl mb-1">🍽️</div>
-            <p class="font-bold text-xs">Maquis Chez Mariama</p>
-            <p class="text-[10px] text-gray-400">20-35 min</p>
+        <div>
+          <p class="font-black text-gray-900 text-base mb-2">Commerces partenaires</p>
+          <div class="flex gap-2 overflow-x-hidden mb-3">
+            <div class="flex-shrink-0 bg-green-600 text-white px-3 py-2 rounded-2xl text-center">
+              <p class="text-lg">🏪</p><p class="text-[9px] font-bold">Tout</p>
+            </div>
+            <div class="flex-shrink-0 bg-white border border-gray-100 px-3 py-2 rounded-2xl text-center">
+              <p class="text-lg">🍽️</p><p class="text-[9px] font-bold text-gray-600">Restau</p>
+            </div>
+            <div class="flex-shrink-0 bg-white border border-gray-100 px-3 py-2 rounded-2xl text-center">
+              <p class="text-lg">💊</p><p class="text-[9px] font-bold text-gray-600">Pharma</p>
+            </div>
+            <div class="flex-shrink-0 bg-white border border-gray-100 px-3 py-2 rounded-2xl text-center">
+              <p class="text-lg">🛒</p><p class="text-[9px] font-bold text-gray-600">Super</p>
+            </div>
           </div>
-          <div class="flex-shrink-0 w-40">
-            <div class="h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center text-4xl mb-1">💊</div>
-            <p class="font-bold text-xs">Pharmacie Centrale</p>
-            <p class="text-[10px] text-gray-400">15-25 min</p>
-          </div>
-        </div>
-      </div>
-      <!-- Bottom nav -->
-      <div class="bg-white border-t border-gray-100 flex justify-around py-2 mt-auto">
-        <div class="flex flex-col items-center gap-1 text-green-600"><span>🏠</span><span class="text-[10px] font-bold">Accueil</span></div>
-        <div class="flex flex-col items-center gap-1 text-gray-400 relative"><span>🛒</span><span class="absolute -top-1 right-0 bg-orange-500 text-white text-[9px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">2</span><span class="text-[10px] font-bold">Panier</span></div>
-        <div class="flex flex-col items-center gap-1 text-gray-400"><span>📦</span><span class="text-[10px] font-bold">Commandes</span></div>
-        <div class="flex flex-col items-center gap-1 text-gray-400"><span>👤</span><span class="text-[10px] font-bold">Profil</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 2: COURSES -->
-  <div>
-    <p class="text-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">🛒 Service Courses</p>
-    <div class="phone">
-      <div class="bg-gray-900 px-4 py-2 flex gap-2 justify-center">
-        <span class="px-3 py-1 rounded-full text-xs font-black bg-white text-gray-900">👤 Client</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🛵 Livreur</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🏢 Admin</span>
-      </div>
-      <div class="bg-green-600 text-white px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-2"><span>🛵</span><div><p class="font-black text-sm">Abengourou Express</p><p class="text-[10px] text-green-200">Livraison & Courses rapides</p></div></div>
-      </div>
-      <!-- Courses header -->
-      <div class="bg-gradient-to-br from-orange-500 to-amber-500 px-4 py-4">
-        <div class="text-white/70 text-sm mb-2">← Retour</div>
-        <h2 class="text-white font-black text-xl">🛒 Faire mes courses</h2>
-        <p class="text-white/80 text-xs mt-1">Envoyez votre liste, nous faisons vos achats</p>
-      </div>
-      <div class="px-4 py-3 space-y-3 overflow-y-auto" style="max-height:620px">
-        <!-- Shopping list -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <p class="font-black text-gray-900 text-sm mb-3">📝 Ma liste de courses <span class="text-[10px] text-gray-400 font-normal">(4 articles)</span></p>
+          <!-- Shop cards -->
           <div class="space-y-2">
-            <div class="flex gap-2"><span class="text-gray-300 text-xs w-3">1.</span><div class="flex-1 p-2 bg-gray-50 rounded-lg text-xs font-medium">Riz parfumé</div><div class="w-20 p-2 bg-gray-50 rounded-lg text-xs text-gray-600">5 kg</div></div>
-            <div class="flex gap-2"><span class="text-gray-300 text-xs w-3">2.</span><div class="flex-1 p-2 bg-gray-50 rounded-lg text-xs font-medium">Huile de palme</div><div class="w-20 p-2 bg-gray-50 rounded-lg text-xs text-gray-600">2 litres</div></div>
-            <div class="flex gap-2"><span class="text-gray-300 text-xs w-3">3.</span><div class="flex-1 p-2 bg-gray-50 rounded-lg text-xs font-medium">Oignons</div><div class="w-20 p-2 bg-gray-50 rounded-lg text-xs text-gray-600">1 kg</div></div>
-            <div class="flex gap-2"><span class="text-gray-300 text-xs w-3">4.</span><div class="flex-1 p-2 bg-gray-50 rounded-lg text-xs font-medium text-gray-300">Ajouter...</div><div class="w-20 p-2 bg-gray-50 rounded-lg text-xs text-gray-300">Qté</div></div>
-          </div>
-          <div class="mt-3 border-2 border-dashed border-gray-200 rounded-xl py-2 text-center text-xs font-bold text-gray-400">+ Ajouter un article</div>
-        </div>
-        <!-- Service type -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <p class="font-black text-gray-900 text-sm mb-3">🛵 Type de service</p>
-          <div class="p-3 rounded-xl border-2 border-orange-400 bg-orange-50 mb-2">
-            <div class="flex justify-between"><div><p class="font-black text-sm text-gray-900">🛒 Courses + Livraison</p><p class="text-[10px] text-gray-500">Notre livreur fait vos achats</p></div><span class="text-xs font-black text-orange-600 bg-orange-100 px-2 py-0.5 rounded-lg">+1 000 FCFA</span></div>
-          </div>
-          <div class="p-3 rounded-xl border-2 border-gray-100 bg-gray-50">
-            <p class="font-black text-sm text-gray-900">🚶 J'ai déjà fait mes achats</p><p class="text-[10px] text-gray-500">Le livreur collecte et livre</p>
-          </div>
-        </div>
-        <!-- Quartier -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <p class="font-black text-gray-900 text-sm mb-2">📍 Quartier de livraison</p>
-          <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center">
-            <span class="text-sm font-medium">Kennedy</span>
-            <span class="text-xs font-black text-green-600">700 FCFA</span>
-          </div>
-        </div>
-        <!-- Deposit -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <p class="font-black text-gray-900 text-sm mb-1">💰 Dépôt pour les achats</p>
-          <p class="text-[10px] text-gray-400 mb-2">Le livreur vous rend la monnaie si moins cher</p>
-          <div class="p-3 bg-gray-50 rounded-xl border border-green-200 flex justify-between"><span class="text-sm font-bold text-green-600">8 000</span><span class="text-xs text-gray-400 font-black">FCFA</span></div>
-        </div>
-        <!-- Summary -->
-        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4">
-          <p class="font-black text-white text-sm mb-3">📋 Récapitulatif total à déposer</p>
-          <div class="space-y-1.5">
-            <div class="flex justify-between text-sm"><span class="text-gray-300">Dépôt pour les achats</span><span class="font-bold text-white">8 000 FCFA</span></div>
-            <div class="flex justify-between text-sm"><span class="text-gray-300">Frais de livraison (Kennedy)</span><span class="font-bold text-white">700 FCFA</span></div>
-            <div class="flex justify-between text-sm"><span class="text-gray-300">Frais de courses</span><span class="font-bold text-orange-300">1 000 FCFA</span></div>
-            <div class="border-t border-white/10 pt-2 flex justify-between"><span class="font-black text-white">TOTAL À DÉPOSER</span><span class="font-black text-green-400 text-lg">9 700 FCFA</span></div>
-          </div>
-        </div>
-        <div class="bg-orange-500 text-white text-center py-4 rounded-2xl font-black text-sm shadow-xl">
-          Valider ma liste · 9 700 FCFA
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 3: SHOP DETAIL -->
-  <div>
-    <p class="text-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">🍽️ Détail Boutique</p>
-    <div class="phone">
-      <div class="bg-gray-900 px-4 py-2 flex gap-2 justify-center">
-        <span class="px-3 py-1 rounded-full text-xs font-black bg-white text-gray-900">👤 Client</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🛵 Livreur</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🏢 Admin</span>
-      </div>
-      <div class="bg-green-600 text-white px-4 py-3"><div class="flex items-center gap-2"><span>🛵</span><p class="font-black text-sm">Abengourou Express</p></div></div>
-      <!-- Shop hero -->
-      <div class="bg-gradient-to-br from-orange-500 to-yellow-500 pt-12 pb-5 px-4 relative">
-        <div class="absolute top-3 left-3 bg-black/20 p-1.5 rounded-full text-white text-xs">←</div>
-        <div class="flex items-end gap-3">
-          <span class="text-4xl">🍽️</span>
-          <div class="text-white">
-            <p class="font-black text-lg">Maquis Chez Mariama</p>
-            <p class="text-white/80 text-xs">Cuisine ivoirienne authentique</p>
-            <p class="text-white/60 text-[10px] mt-0.5">⭐ 4.8 · ⏱️ 20-35 min</p>
-          </div>
-        </div>
-      </div>
-      <div class="mx-3 mt-2 bg-green-50 border border-green-100 rounded-xl px-3 py-1.5">
-        <p class="text-[10px] text-green-700 font-bold">🛵 Livraison selon votre quartier — 500 à 1 200 FCFA</p>
-      </div>
-      <div class="px-3 mt-3 space-y-2 overflow-y-auto" style="max-height:470px">
-        <p class="font-black text-gray-500 text-[10px] uppercase tracking-widest">Plats principaux</p>
-        <!-- Product 1 -->
-        <div class="bg-white rounded-xl p-3 flex gap-3 shadow-sm border border-gray-100">
-          <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-3xl">🐟</div>
-          <div class="flex-1">
-            <p class="font-bold text-xs text-gray-900">Attiéké Poisson Braisé</p>
-            <span class="text-[9px] font-black text-orange-500 bg-orange-50 px-1 rounded">⭐ POPULAIRE</span>
-            <p class="text-[10px] text-gray-400 mt-0.5">Attiéké frais avec poisson braisé</p>
-            <div class="flex justify-between items-center mt-1">
-              <p class="font-black text-green-600 text-xs">2 000 FCFA</p>
-              <div class="flex items-center gap-1">
-                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs">−</div>
-                <span class="font-bold text-xs">2</span>
-                <div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs">+</div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex">
+              <div class="w-20 h-20 bg-gradient-to-br from-orange-400 to-yellow-400 flex items-center justify-center text-3xl flex-shrink-0">🍽️</div>
+              <div class="p-3 flex-1">
+                <div class="flex justify-between items-start">
+                  <p class="font-black text-gray-900 text-xs">Maquis Chez Mariama</p>
+                  <span class="text-[9px] bg-green-100 text-green-700 font-bold px-1.5 py-0.5 rounded-full">Ouvert</span>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-0.5">Cuisine ivoirienne authentique</p>
+                <div class="flex gap-3 mt-1.5 text-[10px] text-gray-500">
+                  <span>⭐ 4.8</span><span>⏱️ 20-35min</span><span class="text-green-600 font-bold">Livraison/quartier</span>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex">
+              <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-3xl flex-shrink-0">💊</div>
+              <div class="p-3 flex-1">
+                <div class="flex justify-between items-start">
+                  <p class="font-black text-gray-900 text-xs">Pharmacie Centrale</p>
+                  <span class="text-[9px] bg-green-100 text-green-700 font-bold px-1.5 py-0.5 rounded-full">Ouvert</span>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-0.5">Médicaments & parapharmacie</p>
+                <div class="flex gap-3 mt-1.5 text-[10px] text-gray-500">
+                  <span>⭐ 4.9</span><span>⏱️ 15-25min</span><span class="text-green-600 font-bold">Livraison/quartier</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- Product 2 -->
-        <div class="bg-white rounded-xl p-3 flex gap-3 shadow-sm border border-gray-100">
-          <div class="w-14 h-14 bg-yellow-50 rounded-xl flex items-center justify-center text-3xl">🍚</div>
+      </div>
+      <!-- Bottom nav -->
+      <div class="bg-white border-t border-gray-100 flex justify-around py-2 mt-4">
+        <div class="flex flex-col items-center text-green-600"><span class="text-lg">🏠</span><span class="text-[9px] font-bold">Accueil</span></div>
+        <div class="flex flex-col items-center text-gray-400"><span class="text-lg">🛒</span><span class="text-[9px] font-bold">Panier</span></div>
+        <div class="flex flex-col items-center text-gray-400"><span class="text-lg">📋</span><span class="text-[9px] font-bold">Commandes</span></div>
+        <div class="flex flex-col items-center text-gray-400"><span class="text-lg">👤</span><span class="text-[9px] font-bold">Profil</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     ÉCRAN 2 — CLIENT BOUTIQUE + PANIER
+     ══════════════════════════════════════════════════════════ -->
+<div>
+  <p class="text-slate-400 text-xs font-bold uppercase tracking-widest text-center mb-3">👤 Client — Boutique</p>
+  <div class="phone">
+    <div class="screen">
+      <div class="bg-gray-900 px-2 py-1.5 flex gap-1 justify-center">
+        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-[10px] font-black">👤 Client</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🛵 Livreur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏪 Fournisseur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏢 Admin</span>
+      </div>
+      <!-- Shop header -->
+      <div class="bg-gradient-to-br from-orange-500 to-yellow-500 pt-12 pb-5 px-4 relative">
+        <div class="absolute top-3 left-4 bg-black/20 p-1.5 rounded-full">
+          <span class="text-white text-xs">←</span>
+        </div>
+        <div class="flex items-end gap-3">
+          <span class="text-4xl">🍽️</span>
+          <div class="text-white">
+            <h1 class="font-black text-lg leading-tight">Maquis Chez Mariama</h1>
+            <p class="text-white/80 text-xs">Cuisine ivoirienne authentique</p>
+            <div class="flex gap-3 mt-0.5 text-xs text-white/70">
+              <span>⭐ 4.8</span><span>⏱️ 20-35 min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mx-4 mt-2 bg-green-50 border border-green-100 rounded-xl px-3 py-1.5">
+        <p class="text-xs text-green-700 font-bold">🛵 Livraison : 500–1 200 FCFA selon quartier</p>
+      </div>
+      <!-- Products -->
+      <div class="px-4 mt-3 space-y-2 pb-20">
+        <p class="text-gray-400 text-[10px] font-black uppercase tracking-widest">Plats principaux</p>
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 flex gap-3">
+          <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🐟</div>
           <div class="flex-1">
-            <p class="font-bold text-xs text-gray-900">Riz Sauce Arachide</p>
-            <span class="text-[9px] font-black text-orange-500 bg-orange-50 px-1 rounded">⭐ POPULAIRE</span>
+            <p class="font-black text-gray-900 text-xs">Attiéké Poisson Braisé</p>
+            <span class="text-[9px] font-black text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded-md">⭐ POPULAIRE</span>
+            <p class="text-[10px] text-gray-400 mt-0.5">Attiéké frais, poisson braisé</p>
+            <div class="flex items-center justify-between mt-1.5">
+              <p class="font-black text-green-600 text-xs">2 000 FCFA</p>
+              <div class="flex items-center gap-1.5">
+                <button class="w-6 h-6 rounded-full bg-gray-100 text-xs flex items-center justify-center">−</button>
+                <span class="font-black text-sm w-4 text-center">2</span>
+                <button class="w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 flex gap-3">
+          <div class="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🍚</div>
+          <div class="flex-1">
+            <p class="font-black text-gray-900 text-xs">Riz Sauce Arachide</p>
             <p class="text-[10px] text-gray-400 mt-0.5">Riz blanc, sauce arachide maison</p>
-            <div class="flex justify-between items-center mt-1">
+            <div class="flex items-center justify-between mt-1.5">
               <p class="font-black text-green-600 text-xs">1 500 FCFA</p>
-              <div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs">+</div>
+              <button class="w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center">+</button>
             </div>
           </div>
         </div>
-        <p class="font-black text-gray-500 text-[10px] uppercase tracking-widest mt-2">Accompagnements</p>
-        <div class="bg-white rounded-xl p-3 flex gap-3 shadow-sm border border-gray-100">
-          <div class="w-14 h-14 bg-yellow-50 rounded-xl flex items-center justify-center text-3xl">🍌</div>
+        <p class="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-2">Accompagnements</p>
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 flex gap-3">
+          <div class="w-14 h-14 bg-yellow-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🍌</div>
           <div class="flex-1">
-            <p class="font-bold text-xs">Alloco au Poisson Fumé</p>
+            <p class="font-black text-gray-900 text-xs">Alloco au Poisson Fumé</p>
             <p class="text-[10px] text-gray-400 mt-0.5">Bananes plantain frites</p>
-            <div class="flex justify-between items-center mt-1">
+            <div class="flex items-center justify-between mt-1.5">
               <p class="font-black text-green-600 text-xs">1 000 FCFA</p>
-              <div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs">+</div>
+              <button class="w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center">+</button>
             </div>
           </div>
         </div>
       </div>
-      <!-- Cart FAB -->
-      <div class="mx-3 mb-2 mt-2 bg-green-600 text-white py-3 rounded-2xl font-black flex items-center justify-between px-4 shadow-xl">
-        <span class="bg-white/20 px-2 py-0.5 rounded-lg text-xs">2 articles</span>
-        <span class="text-sm">Voir le panier</span>
-        <span class="text-sm">5 000 FCFA</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 4: PANIER + CHECKOUT -->
-  <div>
-    <p class="text-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">🛒 Panier & Paiement</p>
-    <div class="phone">
-      <div class="bg-gray-900 px-4 py-2 flex gap-2 justify-center">
-        <span class="px-3 py-1 rounded-full text-xs font-black bg-white text-gray-900">👤 Client</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🛵 Livreur</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🏢 Admin</span>
-      </div>
-      <div class="bg-green-600 px-4 py-3 flex items-center gap-3">
-        <span class="text-white/70 text-sm">←</span>
-        <p class="text-white font-black">Mon Panier</p>
-        <span class="text-green-200 text-xs ml-auto">📍 Chez Mariama</span>
-      </div>
-      <div class="px-3 py-3 space-y-3 overflow-y-auto" style="max-height:620px">
-        <!-- Items -->
-        <div class="bg-white rounded-2xl overflow-hidden divide-y divide-gray-50 shadow-sm border border-gray-100">
-          <div class="p-3 flex items-center gap-2">
-            <span class="text-xl">🐟</span>
-            <div class="flex-1"><p class="font-bold text-xs">Attiéké Poisson Braisé</p><p class="text-[10px] text-gray-400">2 000 FCFA × 2</p></div>
-            <div class="flex items-center gap-1"><div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs">−</div><span class="font-bold text-xs">2</span><div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs">+</div></div>
-            <p class="font-black text-xs text-green-600 w-16 text-right">4 000 FCFA</p>
-          </div>
-          <div class="p-3 flex items-center gap-2">
-            <span class="text-xl">🍌</span>
-            <div class="flex-1"><p class="font-bold text-xs">Alloco Fumé</p><p class="text-[10px] text-gray-400">1 000 FCFA × 1</p></div>
-            <div class="flex items-center gap-1"><div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs">−</div><span class="font-bold text-xs">1</span><div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-xs">+</div></div>
-            <p class="font-black text-xs text-green-600 w-16 text-right">1 000 FCFA</p>
-          </div>
-        </div>
-        <!-- Address -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
-          <p class="font-black text-xs text-gray-900 mb-2">📍 Adresse de livraison</p>
-          <select class="w-full p-2.5 bg-gray-50 rounded-xl text-xs border border-gray-100 mb-2"><option>Kennedy — 700 FCFA</option></select>
-          <div class="p-2.5 bg-gray-50 rounded-xl text-xs text-green-600 font-medium border border-green-100">Rue des Fleurs, Maison bleue</div>
-        </div>
-        <!-- Payment -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
-          <p class="font-black text-xs text-gray-900 mb-2">💳 Paiement</p>
-          <div class="grid grid-cols-3 gap-1.5">
-            <div class="p-2 border-2 border-gray-100 bg-gray-50 rounded-xl text-center"><p class="text-lg">💵</p><p class="text-[9px] font-bold">Espèces</p></div>
-            <div class="p-2 border-2 border-green-500 bg-green-50 rounded-xl text-center"><p class="text-lg">🟠</p><p class="text-[9px] font-bold text-green-600">Orange Money</p></div>
-            <div class="p-2 border-2 border-gray-100 bg-gray-50 rounded-xl text-center"><p class="text-lg">🟡</p><p class="text-[9px] font-bold">MTN Money</p></div>
-          </div>
-        </div>
-        <!-- Summary -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 space-y-1.5">
-          <div class="flex justify-between text-xs text-gray-600"><span>Sous-total articles</span><span class="font-bold">5 000 FCFA</span></div>
-          <div class="flex justify-between text-xs text-gray-600"><span>Livraison — Kennedy</span><span class="font-bold">700 FCFA</span></div>
-          <div class="border-t border-gray-100 pt-1.5 flex justify-between font-black text-green-600 text-sm"><span>TOTAL</span><span>5 700 FCFA</span></div>
-        </div>
-        <div class="bg-green-600 text-white text-center py-3.5 rounded-2xl font-black text-sm shadow-xl">
-          Commander · 5 700 FCFA
+      <!-- Cart sticky button -->
+      <div class="absolute bottom-3 left-4 right-4 z-10" style="position:relative;margin:0 16px 12px">
+        <div class="bg-green-600 text-white py-3.5 rounded-2xl font-black flex items-center justify-between px-5 shadow-2xl">
+          <span class="bg-white/20 px-2 py-0.5 rounded-lg text-sm">2 articles</span>
+          <span>Voir le panier</span>
+          <span>4 000 FCFA</span>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- SCREEN 5: TRACKING -->
-  <div>
-    <p class="text-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">📍 Suivi de Commande</p>
-    <div class="phone">
-      <div class="bg-gray-900 px-4 py-2 flex gap-2 justify-center">
-        <span class="px-3 py-1 rounded-full text-xs font-black bg-white text-gray-900">👤 Client</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🛵 Livreur</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🏢 Admin</span>
+<!-- ══════════════════════════════════════════════════════════
+     ÉCRAN 3 — LIVREUR
+     ══════════════════════════════════════════════════════════ -->
+<div>
+  <p class="text-slate-400 text-xs font-bold uppercase tracking-widest text-center mb-3">🛵 Livreur — Interface</p>
+  <div class="phone">
+    <div class="screen">
+      <div class="bg-gray-900 px-2 py-1.5 flex gap-1 justify-center">
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">👤 Client</span>
+        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-[10px] font-black">🛵 Livreur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏪 Fournisseur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏢 Admin</span>
       </div>
-      <div class="bg-green-600 px-4 py-3 flex items-center gap-2">
-        <span class="text-white/70 text-sm">←</span>
-        <p class="text-white font-black flex-1">Suivi de commande</p>
-        <span class="text-[10px] font-black bg-orange-100 text-orange-700 px-2 py-0.5 rounded-lg">🛒 Courses</span>
-      </div>
-      <div class="px-3 py-3 space-y-3 overflow-y-auto" style="max-height:640px">
-        <!-- Order ID -->
-        <div class="bg-white rounded-2xl p-3 flex justify-between items-center shadow-sm border border-gray-100">
-          <div><p class="text-[10px] text-gray-400">Commande</p><p class="font-black text-green-600 text-xl">ABG-002</p></div>
-          <span class="text-[10px] font-black px-2 py-1 rounded-lg bg-green-50 text-green-700">En livraison</span>
-        </div>
-        <!-- Driver -->
-        <div class="bg-white rounded-2xl p-3 flex items-center gap-3 shadow-sm border border-gray-100">
-          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-2xl">🛵</div>
-          <div class="flex-1"><p class="text-[10px] text-gray-400">Votre livreur</p><p class="font-black text-sm">Ama Kouamé</p></div>
-          <div class="bg-green-600 text-white px-2 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1">📞 Appeler</div>
-        </div>
-        <!-- Shopping list for this order -->
-        <div class="bg-orange-50 border border-orange-100 rounded-2xl p-3">
-          <p class="font-black text-orange-800 text-xs mb-2">🛒 Liste de courses</p>
-          <p class="text-xs text-orange-700">• Riz parfumé — 5 kg</p>
-          <p class="text-xs text-orange-700">• Huile de palme — 2 litres</p>
-          <p class="text-xs text-orange-700">• Oignons — 1 kg</p>
-          <p class="text-xs text-orange-700">• Tomates fraîches — 500 g</p>
-          <div class="mt-2 pt-2 border-t border-orange-200">
-            <p class="text-[10px] text-orange-600 font-bold">💰 Dépôt : 8 000 FCFA — Le livreur rend la monnaie</p>
+      <div class="bg-blue-800 text-white px-4 py-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🛵</span>
+          <div>
+            <p class="font-black text-sm leading-none">Abengourou Express</p>
+            <p class="text-blue-300 text-[10px]">Interface Livreur</p>
           </div>
         </div>
-        <!-- Progress -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <p class="font-black text-gray-900 text-sm mb-3">Progression</p>
-          <div class="space-y-4">
-            <div class="flex items-center gap-3"><div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center text-lg">✅</div><p class="font-bold text-xs text-gray-900">Liste reçue et validée</p></div>
-            <div class="flex items-center gap-3"><div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center text-lg">🛵</div><p class="font-bold text-xs text-gray-900">Livreur en route pour les courses</p></div>
-            <div class="flex items-center gap-3"><div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center text-lg">🛒</div><p class="font-bold text-xs text-gray-900">Achats en cours au marché</p></div>
-            <div class="flex items-center gap-3 relative">
-              <div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center text-lg">📍</div>
-              <div class="flex-1"><p class="font-bold text-xs text-green-600">En livraison chez vous</p><p class="text-[10px] text-green-500">En cours...</p></div>
-              <div class="w-2.5 h-2.5 bg-green-500 rounded-full animate-ping"></div>
-            </div>
-            <div class="flex items-center gap-3 opacity-30"><div class="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center"><div class="w-2 h-2 bg-gray-300 rounded-full"></div></div><p class="font-bold text-xs text-gray-300">Livré + monnaie rendue !</p></div>
-          </div>
-        </div>
-        <!-- Cost summary -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 space-y-1.5 text-xs">
-          <p class="font-black text-sm text-gray-900 mb-2">Récapitulatif financier</p>
-          <div class="flex justify-between text-gray-600"><span>Dépôt pour achats</span><span class="font-bold">8 000 FCFA</span></div>
-          <div class="flex justify-between text-gray-600"><span>Frais de livraison</span><span class="font-bold">700 FCFA</span></div>
-          <div class="flex justify-between text-orange-600"><span>Frais de courses</span><span class="font-bold">1 000 FCFA</span></div>
-          <div class="border-t border-gray-100 pt-1.5 flex justify-between font-black text-green-600 text-sm"><span>Total déposé</span><span>9 700 FCFA</span></div>
-        </div>
+        <span class="text-white text-sm">🔔</span>
       </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 6: DELIVERY DRIVER -->
-  <div>
-    <p class="text-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">🛵 Interface Livreur</p>
-    <div class="phone">
-      <div class="bg-gray-900 px-4 py-2 flex gap-2 justify-center">
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">👤 Client</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black bg-white text-gray-900">🛵 Livreur</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🏢 Admin</span>
-      </div>
-      <div class="bg-green-600 text-white px-4 py-3 flex items-center gap-2"><span>🛵</span><p class="font-black text-sm">Abengourou Express</p></div>
       <!-- Driver header -->
-      <div class="bg-gradient-to-br from-blue-700 to-blue-900 px-4 py-5">
-        <div class="flex justify-between mb-4">
-          <div><p class="text-blue-300 text-[10px] font-bold uppercase">Interface Livreur</p><p class="text-white font-black text-xl">Bonjour, Kofi 👋</p></div>
-          <div class="text-right"><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-green-400/30 text-green-200">🟢 Disponible</span><p class="text-blue-300 text-[10px] mt-0.5">🏍️ Moto</p></div>
+      <div class="bg-gradient-to-br from-blue-700 to-blue-900 px-4 pt-4 pb-5">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <p class="text-blue-300 text-[10px] font-bold uppercase tracking-widest mb-0.5">Interface Livreur</p>
+            <h1 class="text-white font-black text-xl">Bonjour, Kofi 👋</h1>
+            <p class="text-blue-300 text-[10px]">+225 07 12 34 56</p>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-black px-2 py-1 rounded-full bg-green-400/30 text-green-200">🟢 Disponible</span>
+            <p class="text-blue-300 text-[10px] mt-1">🏍️ Moto</p>
+          </div>
         </div>
-        <div class="grid grid-cols-3 gap-2">
-          <div class="bg-white/10 rounded-xl p-2 text-center"><p class="text-lg">📦</p><p class="font-black text-white">347</p><p class="text-[9px] text-blue-200">Livraisons</p></div>
-          <div class="bg-white/10 rounded-xl p-2 text-center"><p class="text-lg"> </p><p class="font-black text-white">4.9 ⭐</p><p class="text-[9px] text-blue-200">Note</p></div>
-          <div class="bg-white/10 rounded-xl p-2 text-center"><p class="text-lg">🔔</p><p class="font-black text-white">2</p><p class="text-[9px] text-blue-200">En attente</p></div>
+        <div class="grid grid-cols-4 gap-2">
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="text-base">📦</p><p class="font-black text-white text-sm">347</p>
+            <p class="text-[9px] text-blue-200">Livraisons</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="text-base"></p><p class="font-black text-white text-sm">4.9⭐</p>
+            <p class="text-[9px] text-blue-200">Note</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="text-base">🔔</p><p class="font-black text-white text-sm">3</p>
+            <p class="text-[9px] text-blue-200">Dispos</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="text-base">💵</p><p class="font-black text-white text-sm">5 800</p>
+            <p class="text-[9px] text-blue-200">Gains FCFA</p>
+          </div>
         </div>
       </div>
-      <div class="px-3 py-3 space-y-3 overflow-y-auto" style="max-height:500px">
-        <p class="font-black text-sm text-gray-900">🔔 Commandes disponibles (2)</p>
-        <!-- Shopping order card -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 space-y-2">
+      <!-- Tabs -->
+      <div class="flex bg-white border-b border-gray-100">
+        <div class="flex-1 py-2.5 text-xs font-black text-blue-700 text-center border-b-2 border-blue-600">🔔 Disponibles <span class="bg-blue-600 text-white text-[9px] w-3.5 h-3.5 rounded-full inline-flex items-center justify-center ml-0.5">3</span></div>
+        <div class="flex-1 py-2.5 text-xs font-black text-gray-400 text-center">🚀 En cours</div>
+        <div class="flex-1 py-2.5 text-xs font-black text-gray-400 text-center">💰 Gains</div>
+      </div>
+      <!-- Orders -->
+      <div class="px-4 mt-3 space-y-3 pb-6">
+        <!-- Ready order (green) -->
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-3 space-y-2">
+          <div class="bg-green-100 border border-green-200 rounded-xl px-3 py-1.5 flex items-center gap-2">
+            <span class="text-green-600 text-xs">✅</span>
+            <p class="text-xs font-black text-green-700">Commande prête chez le fournisseur !</p>
+          </div>
           <div class="flex justify-between items-start">
-            <div><span class="text-[10px] font-black bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-md">🛒 Courses</span><p class="font-black text-sm mt-1">Courses au marché</p><p class="text-[10px] text-gray-400">5 articles · Budget 8 000 FCFA</p></div>
-            <span class="text-[10px] font-black text-orange-600 bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded-lg">💰 Commission</span>
+            <div>
+              <div class="flex gap-2 mb-1">
+                <span class="text-[9px] font-black bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded-md">🛍️ Livraison</span>
+                <span class="text-[9px] text-gray-400">ABG-008</span>
+              </div>
+              <p class="font-black text-gray-900 text-xs">Supermarché Le Bonheur</p>
+              <p class="text-[10px] text-gray-500">3 articles · 7 300 FCFA</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black text-green-700 bg-green-100 px-2 py-1 rounded-lg block">+600 FCFA</span>
+              <p class="text-[9px] text-gray-400 mt-0.5">votre gain</p>
+            </div>
+          </div>
+          <div class="bg-gray-50 rounded-xl px-2 py-1.5">
+            <p class="text-[10px] text-gray-600 font-medium">📍 Stade Municipal · Cité ouvrière n°22</p>
+          </div>
+          <button class="w-full bg-blue-600 text-white py-2.5 rounded-xl font-black text-xs">Récupérer chez le fournisseur 🏪</button>
+        </div>
+        <!-- Regular order -->
+        <div class="bg-white border border-gray-100 rounded-2xl p-3 space-y-2">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="flex gap-2 mb-1">
+                <span class="text-[9px] font-black bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-md">🛒 Courses</span>
+                <span class="text-[9px] text-gray-400">ABG-002</span>
+              </div>
+              <p class="font-black text-gray-900 text-xs">🛒 Courses au marché</p>
+              <p class="text-[10px] text-gray-500">4 articles · Budget 8 000 FCFA</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black text-green-700 bg-green-100 px-2 py-1 rounded-lg block">+1 700 FCFA</span>
+              <p class="text-[9px] text-gray-400 mt-0.5">votre gain</p>
+            </div>
           </div>
           <div class="bg-orange-50 rounded-xl p-2 space-y-0.5">
+            <p class="text-[10px] font-black text-orange-700">🛒 Liste à acheter :</p>
             <p class="text-[10px] text-orange-700">• Riz parfumé — 5 kg</p>
             <p class="text-[10px] text-orange-700">• Huile de palme — 2 litres</p>
             <p class="text-[10px] text-orange-700">• Oignons — 1 kg</p>
-            <p class="text-[10px] text-orange-400 font-bold">+2 autres articles...</p>
-          </div>
-          <div class="bg-gray-50 rounded-xl px-2 py-1.5">
-            <p class="text-[10px] text-gray-500">📍 Livrer à : Kennedy · 700 FCFA</p>
-            <p class="text-[10px] text-orange-500 font-bold">+ Frais de courses : 1 000 FCFA</p>
           </div>
           <div class="flex gap-2">
-            <div class="flex-1 bg-green-600 text-white py-2.5 rounded-xl font-black text-xs text-center">Accepter les courses ✓</div>
-            <div class="px-3 py-2.5 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs">Refuser</div>
-          </div>
-        </div>
-        <!-- Regular delivery -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 space-y-2">
-          <div class="flex justify-between items-start">
-            <div><span class="text-[10px] font-black bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded-md">🛍️ Livraison</span><p class="font-black text-sm mt-1">Grillade Palace</p><p class="text-[10px] text-gray-400">1 article · 3 300 FCFA</p></div>
-            <span class="text-[10px] font-black text-orange-600 bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded-lg">💰 Commission</span>
-          </div>
-          <div class="bg-gray-50 rounded-xl px-2 py-1.5">
-            <p class="text-[10px] text-gray-500">📍 Livrer à : Résidentiel · 800 FCFA</p>
-          </div>
-          <div class="flex gap-2">
-            <div class="flex-1 bg-green-600 text-white py-2.5 rounded-xl font-black text-xs text-center">Accepter la livraison ✓</div>
-            <div class="px-3 py-2.5 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs">Refuser</div>
+            <button class="flex-1 bg-blue-600 text-white py-2 rounded-xl font-black text-xs">Accepter les courses ✓</button>
+            <button class="px-3 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs">Refuser</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- SCREEN 7: ADMIN -->
-  <div>
-    <p class="text-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">🏢 Interface Admin</p>
-    <div class="phone">
-      <div class="bg-gray-900 px-4 py-2 flex gap-2 justify-center">
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">👤 Client</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black text-gray-400">🛵 Livreur</span>
-        <span class="px-3 py-1 rounded-full text-xs font-black bg-white text-gray-900">🏢 Admin</span>
-      </div>
-      <div class="bg-green-600 text-white px-4 py-3"><div class="flex items-center gap-2"><span>🛵</span><p class="font-black text-sm">Abengourou Express</p></div></div>
-      <!-- Admin header -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-700 px-4 py-5">
-        <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Administration</p>
-        <h2 class="text-white font-black text-xl">🏢 Tableau de Bord</h2>
-        <p class="text-gray-400 text-[10px] mt-1">lundi 2 juin 2026</p>
-      </div>
-      <div class="px-3 py-3 space-y-3 overflow-y-auto" style="max-height:570px">
-        <!-- Stats grid -->
-        <div class="grid grid-cols-2 gap-2">
-          <div class="bg-blue-50 border border-blue-100 rounded-2xl p-3"><p class="text-xl mb-1">📦</p><p class="font-black text-xl text-blue-800">6</p><p class="text-[10px] text-blue-600 font-medium">Commandes totales</p></div>
-          <div class="bg-green-50 border border-green-100 rounded-2xl p-3"><p class="text-xl mb-1">💰</p><p class="font-black text-lg text-green-800">4 700 FCFA</p><p class="text-[10px] text-green-600 font-medium">Revenus frais</p></div>
-          <div class="bg-orange-50 border border-orange-100 rounded-2xl p-3"><p class="text-xl mb-1">🛵</p><p class="font-black text-xl text-orange-800">3</p><p class="text-[10px] text-orange-600 font-medium">En cours</p></div>
-          <div class="bg-purple-50 border border-purple-100 rounded-2xl p-3"><p class="text-xl mb-1">👤</p><p class="font-black text-xl text-purple-800">2/3</p><p class="text-[10px] text-purple-600 font-medium">Livreurs dispo.</p></div>
-        </div>
-        <!-- Services breakdown -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
-          <p class="font-black text-sm text-gray-900 mb-2">📊 Répartition des services</p>
-          <div class="space-y-2">
-            <div class="flex items-center gap-2"><div class="flex-1 bg-blue-100 rounded-full h-2"><div class="bg-blue-500 h-full rounded-full" style="width:67%"></div></div><span class="text-[10px] font-bold text-gray-600 w-24">🛍️ 4 livraisons</span></div>
-            <div class="flex items-center gap-2"><div class="flex-1 bg-orange-100 rounded-full h-2"><div class="bg-orange-500 h-full rounded-full" style="width:33%"></div></div><span class="text-[10px] font-bold text-gray-600 w-24">🛒 2 courses</span></div>
-          </div>
-        </div>
-        <!-- Tarifs -->
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
-          <p class="font-black text-sm text-gray-900 mb-2">🛵 Tarifs par quartier</p>
-          <div class="grid grid-cols-2 gap-1.5">
-            <div class="flex justify-between bg-gray-50 rounded-lg px-2 py-1.5"><span class="text-[10px] text-gray-600">Centre-ville</span><span class="text-[10px] font-black text-green-600">500 FCFA</span></div>
-            <div class="flex justify-between bg-gray-50 rounded-lg px-2 py-1.5"><span class="text-[10px] text-gray-600">Kennedy</span><span class="text-[10px] font-black text-green-600">700 FCFA</span></div>
-            <div class="flex justify-between bg-gray-50 rounded-lg px-2 py-1.5"><span class="text-[10px] text-gray-600">Résidentiel</span><span class="text-[10px] font-black text-green-600">800 FCFA</span></div>
-            <div class="flex justify-between bg-gray-50 rounded-lg px-2 py-1.5"><span class="text-[10px] text-gray-600">Morafé</span><span class="text-[10px] font-black text-green-600">1 200 FCFA</span></div>
-          </div>
-          <div class="mt-2 pt-2 border-t border-gray-100 flex justify-between text-[10px]">
-            <span class="text-gray-500">Supplément courses</span><span class="font-black text-orange-600">+1 000 FCFA</span>
-          </div>
-        </div>
-        <!-- Livreurs -->
-        <p class="font-black text-sm text-gray-900">👤 Livreurs</p>
-        <div class="space-y-2">
-          <div class="bg-white rounded-xl p-3 flex items-center gap-3 shadow-sm border border-gray-100"><div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-xl">🧑🏿</div><div class="flex-1"><p class="font-bold text-xs">Kofi Asante</p><p class="text-[10px] text-gray-400">🏍️ 347 livraisons · ⭐4.9</p></div><span class="text-[10px] font-black bg-green-100 text-green-700 px-1.5 py-0.5 rounded-lg">Dispo.</span></div>
-          <div class="bg-white rounded-xl p-3 flex items-center gap-3 shadow-sm border border-gray-100"><div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-xl">👩🏿</div><div class="flex-1"><p class="font-bold text-xs">Ama Kouamé</p><p class="text-[10px] text-gray-400">🏍️ 213 livraisons · ⭐4.7</p></div><span class="text-[10px] font-black bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-lg">En livraison</span></div>
-          <div class="bg-white rounded-xl p-3 flex items-center gap-3 shadow-sm border border-gray-100"><div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-xl">🧑🏿</div><div class="flex-1"><p class="font-bold text-xs">Yao Brou</p><p class="text-[10px] text-gray-400">🚲 89 livraisons · ⭐4.5</p></div><span class="text-[10px] font-black bg-green-100 text-green-700 px-1.5 py-0.5 rounded-lg">Dispo.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
-<div class="text-center mt-12 text-slate-500">
-  <p class="font-bold mb-2">🛵 Application en cours sur <span class="text-green-400 font-black">http://localhost:3000</span></p>
-  <p class="text-sm">React 19 · TypeScript · Tailwind CSS · Vite</p>
+<!-- ══════════════════════════════════════════════════════════
+     ÉCRAN 4 — FOURNISSEUR DASHBOARD
+     ══════════════════════════════════════════════════════════ -->
+<div>
+  <p class="text-slate-400 text-xs font-bold uppercase tracking-widest text-center mb-3">🏪 Fournisseur — Tableau de bord</p>
+  <div class="phone">
+    <div class="screen">
+      <div class="bg-gray-900 px-2 py-1.5 flex gap-1 justify-center">
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">👤 Client</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🛵 Livreur</span>
+        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-[10px] font-black">🏪 Fournisseur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏢 Admin</span>
+      </div>
+      <!-- Shop selector -->
+      <div class="bg-gray-800 px-3 py-1.5 flex gap-2 overflow-x-auto">
+        <button class="flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-full bg-green-600 text-white">Maquis Chez Mariama</button>
+        <button class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full text-gray-400">Pharmacie Centrale</button>
+        <button class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full text-gray-400">Supermarché Le Bonheur</button>
+      </div>
+      <!-- Header -->
+      <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🏪</span>
+          <div>
+            <p class="font-black text-sm leading-none">Abengourou Express</p>
+            <p class="text-white/60 text-[10px]">Maquis Chez Mariama</p>
+          </div>
+        </div>
+        <span class="text-white text-sm">🔔</span>
+      </div>
+      <!-- Supplier header -->
+      <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 px-4 pt-4 pb-5">
+        <div class="flex justify-between items-start mb-1">
+          <div>
+            <p class="text-emerald-200 text-[10px] font-bold uppercase tracking-widest mb-0.5">Fournisseur</p>
+            <h1 class="text-white font-black text-lg leading-tight">Maquis Chez Mariama</h1>
+            <p class="text-emerald-200 text-[10px]">Mariama Coulibaly · Commission 15%</p>
+          </div>
+          <span class="text-[9px] font-black px-2 py-1 rounded-full bg-green-400/30 text-green-200">✅ Actif</span>
+        </div>
+        <div class="grid grid-cols-4 gap-1.5 mt-3">
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="font-black text-white text-sm">3</p>
+            <p class="text-[9px] text-emerald-200">En cours</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="font-black text-white text-sm">24</p>
+            <p class="text-[9px] text-emerald-200">Livrées</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="font-black text-white text-sm">5</p>
+            <p class="text-[9px] text-emerald-200">Produits</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2 text-center">
+            <p class="font-black text-white text-sm">4.8⭐</p>
+            <p class="text-[9px] text-emerald-200">Note</p>
+          </div>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <div class="flex bg-white border-b border-gray-100">
+        <div class="flex-1 py-2.5 text-[10px] font-black text-emerald-700 text-center border-b-2 border-emerald-600">📊 Tableau</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">📦 Commandes</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">🛍️ Produits</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">💰 Ventes</div>
+      </div>
+      <!-- Dashboard content -->
+      <div class="px-4 mt-3 space-y-3 pb-6">
+        <!-- Active orders -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
+          <p class="font-black text-gray-900 text-xs mb-2">📦 Commandes actives</p>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between bg-orange-50 rounded-xl px-3 py-2">
+              <div>
+                <p class="font-bold text-xs text-gray-900">ABG-004 · Marie Akissi</p>
+                <p class="text-[10px] text-gray-500">Riz Sauce Arachide ×2, Jus ×1</p>
+              </div>
+              <span class="badge bg-orange-100 text-orange-700">En préparation</span>
+            </div>
+            <div class="flex items-center justify-between bg-blue-50 rounded-xl px-3 py-2">
+              <div>
+                <p class="font-bold text-xs text-gray-900">ABG-007 · Aya Diabaté</p>
+                <p class="text-[10px] text-gray-500">Attiéké Poisson ×1, Foutou ×1</p>
+              </div>
+              <span class="badge bg-blue-100 text-blue-700">Confirmée</span>
+            </div>
+          </div>
+        </div>
+        <!-- Financial summary -->
+        <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-4 text-white">
+          <p class="text-emerald-200 text-[10px] font-bold uppercase tracking-widest mb-3">Résumé financier</p>
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs">
+              <span class="text-emerald-200">Revenus bruts</span>
+              <span class="font-black">47 800 FCFA</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-emerald-200">Commission Abengourou Express (15%)</span>
+              <span class="font-black text-red-300">− 7 170 FCFA</span>
+            </div>
+            <div class="border-t border-white/20 pt-2 flex justify-between font-black">
+              <span>Votre part nette</span>
+              <span class="text-yellow-300 text-base">40 630 FCFA</span>
+            </div>
+          </div>
+        </div>
+        <!-- Account info -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
+          <p class="font-black text-gray-900 text-xs mb-2">🔑 Informations du compte</p>
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-500">Code d'accès</span>
+              <span class="font-black text-emerald-700 tracking-widest">MAR001</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-500">Taux de commission</span>
+              <span class="font-black text-orange-600">15%</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-500">Membre depuis</span>
+              <span class="font-bold text-gray-700">15 jan. 2024</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     ÉCRAN 5 — FOURNISSEUR COMMANDES
+     ══════════════════════════════════════════════════════════ -->
+<div>
+  <p class="text-slate-400 text-xs font-bold uppercase tracking-widest text-center mb-3">🏪 Fournisseur — Commandes</p>
+  <div class="phone">
+    <div class="screen">
+      <div class="bg-gray-900 px-2 py-1.5 flex gap-1 justify-center">
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">👤 Client</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🛵 Livreur</span>
+        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-[10px] font-black">🏪 Fournisseur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏢 Admin</span>
+      </div>
+      <div class="bg-gray-800 px-3 py-1.5 flex gap-2">
+        <button class="text-[10px] font-black px-2.5 py-1 rounded-full bg-green-600 text-white">Maquis Chez Mariama</button>
+        <button class="text-[10px] font-bold px-2.5 py-1 rounded-full text-gray-400">Pharmacie Centrale</button>
+      </div>
+      <div class="bg-emerald-700 text-white px-4 py-2 flex items-center gap-2">
+        <span class="text-xl">🏪</span>
+        <div class="flex-1"><p class="font-black text-sm">Abengourou Express</p><p class="text-white/60 text-[10px]">Maquis Chez Mariama</p></div>
+      </div>
+      <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 px-4 py-3">
+        <h1 class="text-white font-black text-lg">Maquis Chez Mariama</h1>
+        <p class="text-emerald-200 text-[10px]">Mariama Coulibaly · Commission 15%</p>
+        <div class="grid grid-cols-4 gap-1.5 mt-2">
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">3</p><p class="text-[8px] text-emerald-200">En cours</p></div>
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">24</p><p class="text-[8px] text-emerald-200">Livrées</p></div>
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">5</p><p class="text-[8px] text-emerald-200">Produits</p></div>
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">4.8⭐</p><p class="text-[8px] text-emerald-200">Note</p></div>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <div class="flex bg-white border-b border-gray-100">
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">📊 Tableau</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-emerald-700 text-center border-b-2 border-emerald-600">📦 Commandes</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">🛍️ Produits</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">💰 Ventes</div>
+      </div>
+      <!-- Filter -->
+      <div class="flex gap-2 px-4 pt-3">
+        <button class="text-xs font-bold px-3 py-1.5 rounded-full bg-gray-900 text-white">Tout</button>
+        <button class="text-xs font-bold px-3 py-1.5 rounded-full bg-gray-100 text-gray-600">Actives</button>
+        <button class="text-xs font-bold px-3 py-1.5 rounded-full bg-gray-100 text-gray-600">Terminées</button>
+      </div>
+      <!-- Orders list -->
+      <div class="px-4 mt-3 space-y-3 pb-6">
+        <!-- Confirmed → action -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 space-y-2">
+          <div class="flex justify-between">
+            <div>
+              <div class="flex gap-1.5 mb-1">
+                <span class="badge bg-blue-50 text-blue-700">Confirmée</span>
+                <span class="text-[9px] text-gray-400">ABG-004</span>
+              </div>
+              <p class="font-black text-xs text-gray-900">Marie Akissi</p>
+              <p class="text-[10px] text-gray-500">Stade Municipal · 14h32</p>
+            </div>
+            <p class="font-black text-green-600 text-sm">4 100 FCFA</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-2">
+            <p class="text-[10px] text-gray-600">🛍️ Riz Sauce Arachide ×2, Jus Gingembre ×1</p>
+          </div>
+          <button class="w-full bg-orange-500 text-white py-2.5 rounded-xl font-black text-xs">Commencer la préparation 👨‍🍳</button>
+        </div>
+        <!-- Preparing → mark ready -->
+        <div class="bg-orange-50 border border-orange-200 rounded-2xl p-3 space-y-2">
+          <div class="flex justify-between">
+            <div>
+              <div class="flex gap-1.5 mb-1">
+                <span class="badge bg-orange-100 text-orange-700">En préparation</span>
+                <span class="text-[9px] text-gray-400">ABG-001</span>
+              </div>
+              <p class="font-black text-xs text-gray-900">Adjoua Koffi</p>
+              <p class="text-[10px] text-gray-500">Kennedy · 14h15</p>
+            </div>
+            <p class="font-black text-green-600 text-sm">5 700 FCFA</p>
+          </div>
+          <div class="bg-white rounded-xl p-2">
+            <p class="text-[10px] text-gray-600">🛍️ Attiéké Poisson ×2, Alloco ×1</p>
+          </div>
+          <button class="w-full bg-green-600 text-white py-2.5 rounded-xl font-black text-xs">Prêt pour récupération ✅</button>
+        </div>
+        <!-- Ready — waiting driver -->
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-3 space-y-2">
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="flex gap-1.5 mb-1">
+                <span class="badge bg-green-100 text-green-700">Prêt ✓</span>
+                <span class="text-[9px] text-gray-400">ABG-007</span>
+              </div>
+              <p class="font-black text-xs text-gray-900">Aya Diabaté</p>
+            </div>
+            <p class="font-black text-green-600 text-sm">4 700 FCFA</p>
+          </div>
+          <div class="bg-white rounded-xl px-3 py-1.5 flex items-center gap-2">
+            <span class="text-[10px]">⏳</span>
+            <p class="text-[10px] text-gray-600 font-medium">En attente d'un livreur...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     ÉCRAN 6 — ADMIN DASHBOARD
+     ══════════════════════════════════════════════════════════ -->
+<div>
+  <p class="text-slate-400 text-xs font-bold uppercase tracking-widest text-center mb-3">🏢 Admin — Tableau de bord</p>
+  <div class="phone">
+    <div class="screen">
+      <div class="bg-gray-900 px-2 py-1.5 flex gap-1 justify-center">
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">👤 Client</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🛵 Livreur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏪 Fournisseur</span>
+        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-[10px] font-black">🏢 Admin</span>
+      </div>
+      <div class="bg-gray-800 text-white px-4 py-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🏢</span>
+          <div>
+            <p class="font-black text-sm leading-none">Abengourou Express</p>
+            <p class="text-white/50 text-[10px]">Administration</p>
+          </div>
+        </div>
+        <span class="text-white text-sm">🔔</span>
+      </div>
+      <!-- Admin header -->
+      <div class="bg-gradient-to-br from-gray-900 to-gray-700 px-4 pt-4 pb-5">
+        <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-0.5">Administration</p>
+        <h1 class="text-white font-black text-xl">🏢 Tableau de Bord</h1>
+        <p class="text-gray-400 text-[10px] mt-0.5">Lundi, 2 juin 2026</p>
+        <div class="grid grid-cols-4 gap-1.5 mt-3">
+          <div class="bg-white/10 rounded-xl p-2 text-center"><p class="text-base">📦</p><p class="font-black text-white text-xs">8</p><p class="text-[8px] text-gray-300">Commandes</p></div>
+          <div class="bg-white/10 rounded-xl p-2 text-center"><p class="text-base">🚀</p><p class="font-black text-white text-xs">4</p><p class="text-[8px] text-gray-300">En cours</p></div>
+          <div class="bg-white/10 rounded-xl p-2 text-center"><p class="text-base">💰</p><p class="font-black text-white text-xs">9.8k</p><p class="text-[8px] text-gray-300">Revenus</p></div>
+          <div class="bg-white/10 rounded-xl p-2 text-center"><p class="text-base">🏪</p><p class="font-black text-white text-xs">4</p><p class="text-[8px] text-gray-300">Partenaires</p></div>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <div class="flex bg-white border-b border-gray-100">
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-900 text-center border-b-2 border-gray-900">📊 Tableau</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">📦 Commandes</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">🛵 Livreurs</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">🏪 Partenaires</div>
+      </div>
+      <!-- Content -->
+      <div class="px-4 mt-3 space-y-3 pb-6">
+        <!-- Revenue -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
+          <p class="font-black text-gray-900 text-xs mb-2">💰 Revenus (frais Abengourou Express)</p>
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-500">🛍️ Frais de livraison</span>
+              <span class="font-black text-green-600">7 800 FCFA</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-500">🛒 Frais courses + livraison</span>
+              <span class="font-black text-orange-600">2 000 FCFA</span>
+            </div>
+            <div class="border-t border-gray-100 pt-1.5 flex justify-between font-black text-sm">
+              <span>Total</span>
+              <span class="text-green-600">9 800 FCFA</span>
+            </div>
+          </div>
+        </div>
+        <!-- Services bars -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
+          <p class="font-black text-gray-900 text-xs mb-2">📊 Répartition services</p>
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between text-[10px] text-gray-600 mb-1"><span>🛍️ Livraisons</span><span class="font-bold">7 commandes</span></div>
+              <div class="bg-blue-100 rounded-full h-2.5"><div class="bg-blue-500 h-full rounded-full" style="width:87%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px] text-gray-600 mb-1"><span>🛒 Courses</span><span class="font-bold">1 commande</span></div>
+              <div class="bg-orange-100 rounded-full h-2.5"><div class="bg-orange-500 h-full rounded-full" style="width:13%"></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Delivery fees table -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
+          <p class="font-black text-gray-900 text-xs mb-2">🗺️ Tarifs par quartier</p>
+          <div class="grid grid-cols-2 gap-1.5">
+            <div class="flex justify-between bg-gray-50 rounded-xl px-2.5 py-1.5"><span class="text-[10px] text-gray-600">Centre-ville</span><span class="text-[10px] font-black text-green-600">500 FCFA</span></div>
+            <div class="flex justify-between bg-gray-50 rounded-xl px-2.5 py-1.5"><span class="text-[10px] text-gray-600">Kennedy</span><span class="text-[10px] font-black text-green-600">700 FCFA</span></div>
+            <div class="flex justify-between bg-gray-50 rounded-xl px-2.5 py-1.5"><span class="text-[10px] text-gray-600">Résidentiel</span><span class="text-[10px] font-black text-green-600">800 FCFA</span></div>
+            <div class="flex justify-between bg-gray-50 rounded-xl px-2.5 py-1.5"><span class="text-[10px] text-gray-600">Morafé</span><span class="text-[10px] font-black text-green-600">1 200 FCFA</span></div>
+          </div>
+          <div class="mt-2 pt-2 border-t border-gray-100 flex justify-between text-[10px]">
+            <span class="text-gray-500">Supplément courses</span>
+            <span class="font-black text-orange-600">+ 1 000 FCFA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     ÉCRAN 7 — ADMIN PARTENAIRES
+     ══════════════════════════════════════════════════════════ -->
+<div>
+  <p class="text-slate-400 text-xs font-bold uppercase tracking-widest text-center mb-3">🏢 Admin — Gestion Partenaires</p>
+  <div class="phone">
+    <div class="screen">
+      <div class="bg-gray-900 px-2 py-1.5 flex gap-1 justify-center">
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">👤 Client</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🛵 Livreur</span>
+        <span class="text-gray-500 px-3 py-1 text-[10px] font-bold">🏪 Fournisseur</span>
+        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-[10px] font-black">🏢 Admin</span>
+      </div>
+      <div class="bg-gray-800 text-white px-4 py-2 flex items-center gap-2">
+        <span class="text-xl">🏢</span>
+        <div class="flex-1"><p class="font-black text-sm">Abengourou Express</p><p class="text-white/50 text-[10px]">Administration</p></div>
+      </div>
+      <div class="bg-gradient-to-br from-gray-900 to-gray-700 px-4 py-3">
+        <h1 class="text-white font-black text-lg">🏢 Tableau de Bord</h1>
+        <div class="grid grid-cols-4 gap-1.5 mt-2">
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">8</p><p class="text-[8px] text-gray-300">Commandes</p></div>
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">4</p><p class="text-[8px] text-gray-300">En cours</p></div>
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">9.8k</p><p class="text-[8px] text-gray-300">Revenus</p></div>
+          <div class="bg-white/10 rounded-xl p-1.5 text-center"><p class="font-black text-white text-xs">4</p><p class="text-[8px] text-gray-300">Partenaires</p></div>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <div class="flex bg-white border-b border-gray-100">
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">📊 Tableau</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">📦 Commandes</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-400 text-center">🛵 Livreurs</div>
+        <div class="flex-1 py-2.5 text-[10px] font-black text-gray-900 text-center border-b-2 border-gray-900">🏪 Partenaires</div>
+      </div>
+      <div class="px-4 mt-3 space-y-3 pb-6">
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-2">
+          <div class="bg-green-50 border border-green-100 rounded-xl p-2 text-center"><p class="font-black text-green-800 text-lg">4</p><p class="text-[9px] text-green-600 font-medium">Actifs</p></div>
+          <div class="bg-yellow-50 border border-yellow-100 rounded-xl p-2 text-center"><p class="font-black text-yellow-800 text-lg">1</p><p class="text-[9px] text-yellow-600 font-medium">En attente</p></div>
+          <div class="bg-red-50 border border-red-100 rounded-xl p-2 text-center"><p class="font-black text-red-800 text-lg">1</p><p class="text-[9px] text-red-600 font-medium">Suspendus</p></div>
+        </div>
+        <!-- Filter + Add -->
+        <div class="flex items-center gap-2">
+          <div class="flex gap-1.5 flex-1">
+            <button class="text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-gray-900 text-white">Tous</button>
+            <button class="text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-gray-100 text-gray-600">✅ Actif</button>
+            <button class="text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-gray-100 text-gray-600">⏳ Attente</button>
+          </div>
+          <button class="bg-green-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-black flex-shrink-0">+ Ajouter</button>
+        </div>
+        <!-- Add form (open) -->
+        <div class="bg-gray-50 border-2 border-dashed border-green-200 rounded-2xl p-3 space-y-2">
+          <div class="flex justify-between mb-1">
+            <p class="font-black text-gray-900 text-xs">Nouveau partenaire</p>
+            <span class="text-gray-400 text-sm">✕</span>
+          </div>
+          <input class="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 bg-white text-gray-700" placeholder="Nom du commerce" value="Épicerie Bonne Étoile" readonly />
+          <input class="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 bg-white text-gray-700" placeholder="Propriétaire" value="Yapi Konan" readonly />
+          <input class="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 bg-white text-gray-700" placeholder="Email" value="bonne.etoile@express.ci" readonly />
+          <div class="flex gap-2">
+            <div class="flex-1 flex items-center bg-white border border-gray-200 rounded-xl px-2 py-1.5 gap-1.5">
+              <span class="text-gray-400 text-xs">🔑</span>
+              <span class="text-xs font-black text-green-600 tracking-widest">7K9XQ2</span>
+            </div>
+            <button class="px-3 py-1.5 bg-gray-900 text-white rounded-xl text-[10px] font-black">Générer</button>
+          </div>
+          <button class="w-full bg-green-600 text-white py-2.5 rounded-xl font-black text-xs">✅ Créer le partenariat</button>
+        </div>
+        <!-- Partner cards -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 space-y-2">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-black text-gray-900 text-xs">Maquis Chez Mariama</p>
+              <p class="text-[10px] text-gray-500">Mariama Coulibaly · mariama@express.ci</p>
+            </div>
+            <span class="badge bg-green-100 text-green-700">✅ Actif</span>
+          </div>
+          <div class="grid grid-cols-3 gap-1.5 text-center">
+            <div class="bg-gray-50 rounded-xl py-1.5"><p class="font-black text-[10px] text-green-600 tracking-widest">MAR001</p><p class="text-[8px] text-gray-400">Code accès</p></div>
+            <div class="bg-gray-50 rounded-xl py-1.5"><p class="font-black text-[10px] text-orange-600">15%</p><p class="text-[8px] text-gray-400">Commission</p></div>
+            <div class="bg-gray-50 rounded-xl py-1.5"><p class="font-black text-[10px] text-gray-700">15 jan. 24</p><p class="text-[8px] text-gray-400">Rejoint le</p></div>
+          </div>
+          <div class="flex gap-2">
+            <button class="flex-1 bg-red-50 text-red-600 border border-red-100 py-2 rounded-xl font-black text-[10px]">✕ Suspendre</button>
+            <button class="flex-1 bg-yellow-50 text-yellow-700 border border-yellow-100 py-2 rounded-xl font-black text-[10px]">⏳ Attente</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 space-y-2">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-black text-gray-900 text-xs">Grillade Palace</p>
+              <p class="text-[10px] text-gray-500">Traoré Moussa · grillade@express.ci</p>
+            </div>
+            <span class="badge bg-yellow-100 text-yellow-700">⏳ Attente</span>
+          </div>
+          <div class="grid grid-cols-3 gap-1.5 text-center">
+            <div class="bg-gray-50 rounded-xl py-1.5"><p class="font-black text-[10px] text-green-600 tracking-widest">GRI005</p><p class="text-[8px] text-gray-400">Code accès</p></div>
+            <div class="bg-gray-50 rounded-xl py-1.5"><p class="font-black text-[10px] text-orange-600">15%</p><p class="text-[8px] text-gray-400">Commission</p></div>
+            <div class="bg-gray-50 rounded-xl py-1.5"><p class="font-black text-[10px] text-gray-700">1 juin 24</p><p class="text-[8px] text-gray-400">Rejoint le</p></div>
+          </div>
+          <div class="flex gap-2">
+            <button class="flex-1 bg-green-600 text-white py-2 rounded-xl font-black text-[10px]">✓ Activer</button>
+            <button class="flex-1 bg-red-50 text-red-600 border border-red-100 py-2 rounded-xl font-black text-[10px]">✕ Suspendre</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end flex -->
+
+<div class="text-center mt-12 text-slate-500 text-sm">
+  <p class="font-bold text-slate-400 mb-2">🛵 Abengourou Express — Application de livraison</p>
+  <p>React 19 · TypeScript · Vite · Tailwind CSS</p>
+  <p class="mt-1">4 rôles : Client · Livreur · Fournisseur · Admin</p>
+  <p class="mt-1 text-slate-600">Statuts commande : en attente → confirmée → en préparation → <span class="text-green-400 font-bold">prêt ✓</span> → récupérée → en livraison → livrée</p>
 </div>
 
 </body>
