@@ -1,52 +1,74 @@
 
-export interface ThesisSource {
-  title: string;
-  uri: string;
-}
+export type ViewType = 'home' | 'shop' | 'cart' | 'confirm' | 'tracking' | 'history' | 'delivery' | 'admin';
+export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'picked_up' | 'delivering' | 'delivered' | 'cancelled';
+export type PaymentMethod = 'cash' | 'orange_money' | 'mtn_money';
+export type UserRole = 'customer' | 'delivery' | 'admin';
+export type ShopCategory = 'restaurant' | 'pharmacy' | 'supermarket' | 'bakery' | 'drinks';
 
-export interface ThesisSection {
+export interface Shop {
   id: string;
-  title: string;
-  content: string;
-  status: 'idle' | 'generating' | 'completed';
-}
-
-export interface Student {
   name: string;
-  matricule: string;
+  category: ShopCategory;
+  description: string;
+  address: string;
+  neighborhood: string;
+  rating: number;
+  reviewCount: number;
+  deliveryTime: string;
+  deliveryFee: number;
+  minOrder: number;
+  isOpen: boolean;
+  emoji: string;
+  featured: boolean;
+  coverColor: string;
 }
 
-export interface DeducedLogic {
-  question: string;
-  objectiveGeneral: string;
-  objectivesSpecific: string[];
+export interface Product {
+  id: string;
+  shopId: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  emoji: string;
+  available: boolean;
+  popular: boolean;
 }
 
-export interface ThesisMetadata {
-  author: string;
-  groupNumber: string;
-  students: Student[];
-  speciality: string;
-  option: string;
-  promotion: string;
-  academicYear: string;
-  antenne: string;
-  defenseDate: string;
-  defensePlace: string;
-  juryPresident: string;
-  juryAssessor: string;
-  supervisor: string;
-  supervisorTitle: string;
-  studyType: string;
-  population: string;
-  sampleSize: string;
+export interface CartItem {
+  product: Product;
+  quantity: number;
 }
 
-export interface ThesisData {
-  theme: string;
-  metadata: ThesisMetadata;
-  sources: ThesisSource[];
-  plan: string[];
-  sections: ThesisSection[];
-  deducedLogic?: DeducedLogic;
+export interface DeliveryPerson {
+  id: string;
+  name: string;
+  phone: string;
+  vehicle: 'moto' | 'velo' | 'voiture';
+  rating: number;
+  totalDeliveries: number;
+  isAvailable: boolean;
+  currentOrderId?: string;
+  avatar: string;
+}
+
+export interface Order {
+  id: string;
+  customerName: string;
+  customerPhone: string;
+  shopId: string;
+  shopName: string;
+  items: CartItem[];
+  status: OrderStatus;
+  paymentMethod: PaymentMethod;
+  deliveryAddress: string;
+  deliveryNeighborhood: string;
+  deliveryPersonId?: string;
+  deliveryPersonName?: string;
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+  createdAt: string;
+  estimatedDelivery?: string;
+  notes?: string;
 }
