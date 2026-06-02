@@ -1,6 +1,23 @@
 
 import { Shop, Product, Order, DeliveryPerson } from '../types';
 
+// Frais de livraison par quartier d'Abengourou
+export const DELIVERY_FEES: Record<string, number> = {
+  'Centre-ville':    500,
+  'Kennedy':         700,
+  'Stade Municipal': 600,
+  'Marché Central':  500,
+  'Résidentiel':     800,
+  'Morafé':         1200,
+  'Lycée':           700,
+  'Ancien Marché':   600,
+};
+
+// Supplément si le livreur fait les achats à votre place
+export const SHOPPING_FEE = 1000;
+
+export const NEIGHBORHOODS = Object.keys(DELIVERY_FEES);
+
 export const shops: Shop[] = [
   {
     id: 's1',
@@ -155,7 +172,7 @@ const fp = (id: string): Product => products.find(p => p.id === id)!;
 
 export const deliveryPersons: DeliveryPerson[] = [
   { id: 'd1', name: 'Kofi Asante', phone: '+225 07 12 34 56', vehicle: 'moto', rating: 4.9, totalDeliveries: 347, isAvailable: true, avatar: '🧑🏿' },
-  { id: 'd2', name: 'Ama Kouamé', phone: '+225 05 98 76 54', vehicle: 'moto', rating: 4.7, totalDeliveries: 213, isAvailable: false, currentOrderId: 'o1', avatar: '👩🏿' },
+  { id: 'd2', name: 'Ama Kouamé', phone: '+225 05 98 76 54', vehicle: 'moto', rating: 4.7, totalDeliveries: 213, isAvailable: false, currentOrderId: 'ABG-001', avatar: '👩🏿' },
   { id: 'd3', name: 'Yao Brou', phone: '+225 01 23 45 67', vehicle: 'velo', rating: 4.5, totalDeliveries: 89, isAvailable: true, avatar: '🧑🏿' },
 ];
 
@@ -164,6 +181,7 @@ const ago = (m: number) => new Date(Date.now() - m * 60000).toISOString();
 export const mockOrders: Order[] = [
   {
     id: 'ABG-001',
+    orderType: 'delivery',
     customerName: 'Adjoua Koffi',
     customerPhone: '+225 07 77 88 99',
     shopId: 's1',
@@ -176,13 +194,42 @@ export const mockOrders: Order[] = [
     deliveryPersonId: 'd2',
     deliveryPersonName: 'Ama Kouamé',
     subtotal: 5000,
-    deliveryFee: 500,
-    total: 5500,
+    deliveryFee: 700,
+    total: 5700,
     createdAt: ago(25),
     estimatedDelivery: '10 min',
   },
   {
     id: 'ABG-002',
+    orderType: 'shopping',
+    customerName: 'Adjoua Koffi',
+    customerPhone: '+225 07 77 88 99',
+    shopId: '',
+    shopName: 'Courses au marché',
+    items: [],
+    shoppingList: [
+      { id: '1', name: 'Riz parfumé', quantity: '5 kg' },
+      { id: '2', name: 'Huile de palme', quantity: '2 litres' },
+      { id: '3', name: 'Oignons', quantity: '1 kg' },
+      { id: '4', name: 'Tomates fraîches', quantity: '500 g' },
+      { id: '5', name: 'Cube Maggi', quantity: '1 plaquette' },
+    ],
+    depositAmount: 8000,
+    status: 'confirmed',
+    paymentMethod: 'cash',
+    deliveryAddress: 'Rue des Fleurs, Maison bleue',
+    deliveryNeighborhood: 'Kennedy',
+    subtotal: 0,
+    deliveryFee: 700,
+    shoppingFee: 1000,
+    total: 9700,
+    createdAt: ago(8),
+    estimatedDelivery: '40-50 min',
+    notes: 'Acheter au marché central de préférence',
+  },
+  {
+    id: 'ABG-003',
+    orderType: 'delivery',
     customerName: 'Yves Kouassi',
     customerPhone: '+225 05 55 44 33',
     shopId: 's5',
@@ -193,13 +240,14 @@ export const mockOrders: Order[] = [
     deliveryAddress: 'Quartier Résidentiel, Villa 12',
     deliveryNeighborhood: 'Résidentiel',
     subtotal: 2500,
-    deliveryFee: 600,
-    total: 3100,
+    deliveryFee: 800,
+    total: 3300,
     createdAt: ago(10),
     estimatedDelivery: '30 min',
   },
   {
-    id: 'ABG-003',
+    id: 'ABG-004',
+    orderType: 'delivery',
     customerName: 'Marie Akissi',
     customerPhone: '+225 01 22 33 44',
     shopId: 's2',
@@ -210,13 +258,14 @@ export const mockOrders: Order[] = [
     deliveryAddress: 'Cité, Bloc D Porte 7',
     deliveryNeighborhood: 'Stade Municipal',
     subtotal: 3700,
-    deliveryFee: 500,
-    total: 4200,
+    deliveryFee: 600,
+    total: 4300,
     createdAt: ago(5),
     estimatedDelivery: '25 min',
   },
   {
-    id: 'ABG-004',
+    id: 'ABG-005',
+    orderType: 'delivery',
     customerName: 'Adjoua Koffi',
     customerPhone: '+225 07 77 88 99',
     shopId: 's4',
@@ -229,28 +278,35 @@ export const mockOrders: Order[] = [
     deliveryPersonId: 'd1',
     deliveryPersonName: 'Kofi Asante',
     subtotal: 1400,
-    deliveryFee: 500,
-    total: 1900,
+    deliveryFee: 700,
+    total: 2100,
     createdAt: ago(120),
     estimatedDelivery: 'Livré',
   },
   {
-    id: 'ABG-005',
+    id: 'ABG-006',
+    orderType: 'shopping',
     customerName: 'Adjoua Koffi',
     customerPhone: '+225 07 77 88 99',
-    shopId: 's3',
-    shopName: 'Supermarché Le Bonheur',
-    items: [{ product: fp('p11'), quantity: 1 }, { product: fp('p12'), quantity: 2 }],
+    shopId: '',
+    shopName: 'Courses pharmacie',
+    items: [],
+    shoppingList: [
+      { id: '1', name: 'Paracétamol', quantity: '2 boîtes' },
+      { id: '2', name: 'Savon Dettol', quantity: '1 flacon' },
+    ],
+    depositAmount: 3000,
     status: 'delivered',
     paymentMethod: 'orange_money',
     deliveryAddress: 'Rue des Fleurs, Maison bleue',
     deliveryNeighborhood: 'Kennedy',
-    deliveryPersonId: 'd3',
-    deliveryPersonName: 'Yao Brou',
-    subtotal: 7000,
+    deliveryPersonId: 'd1',
+    deliveryPersonName: 'Kofi Asante',
+    subtotal: 0,
     deliveryFee: 700,
-    total: 7700,
-    createdAt: ago(300),
+    shoppingFee: 1000,
+    total: 4700,
+    createdAt: ago(400),
     estimatedDelivery: 'Livré',
   },
 ];

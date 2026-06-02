@@ -1,9 +1,16 @@
 
-export type ViewType = 'home' | 'shop' | 'cart' | 'confirm' | 'tracking' | 'history' | 'delivery' | 'admin';
 export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'picked_up' | 'delivering' | 'delivered' | 'cancelled';
 export type PaymentMethod = 'cash' | 'orange_money' | 'mtn_money';
 export type UserRole = 'customer' | 'delivery' | 'admin';
 export type ShopCategory = 'restaurant' | 'pharmacy' | 'supermarket' | 'bakery' | 'drinks';
+export type OrderType = 'delivery' | 'shopping';
+
+export interface ShoppingItem {
+  id: string;
+  name: string;
+  quantity: string;
+  estimatedPrice?: number;
+}
 
 export interface Shop {
   id: string;
@@ -54,11 +61,14 @@ export interface DeliveryPerson {
 
 export interface Order {
   id: string;
+  orderType: OrderType;
   customerName: string;
   customerPhone: string;
   shopId: string;
   shopName: string;
   items: CartItem[];
+  shoppingList?: ShoppingItem[];
+  depositAmount?: number;
   status: OrderStatus;
   paymentMethod: PaymentMethod;
   deliveryAddress: string;
@@ -67,6 +77,7 @@ export interface Order {
   deliveryPersonName?: string;
   subtotal: number;
   deliveryFee: number;
+  shoppingFee?: number;
   total: number;
   createdAt: string;
   estimatedDelivery?: string;
