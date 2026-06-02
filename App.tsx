@@ -5,8 +5,13 @@ import {
   CheckCircle, Home, History, User, Search, Phone, CreditCard,
   ArrowLeft, Bell, ShoppingBag, Trash2, AlertCircle, Package,
 } from 'lucide-react';
-import { Shop, Product, CartItem, Order, DeliveryPerson, UserRole, OrderStatus, PaymentMethod, ShoppingItem } from './types';
-import { shops, products, deliveryPersons as initialDrivers, mockOrders, DELIVERY_FEES, SHOPPING_FEE, NEIGHBORHOODS } from './data/mockData';
+import { Shop, Product, CartItem, Order, DeliveryPerson, UserRole, OrderStatus, PaymentMethod, ShoppingItem, SupplierAccount, SupplierStatus } from './types';
+import { shops, products as initialProducts, deliveryPersons as initialDrivers, mockOrders, mockSupplierAccounts, DELIVERY_FEES, SHOPPING_FEE, NEIGHBORHOODS } from './data/mockData';
+import { SupplierView } from './views/SupplierView';
+import { DeliveryView } from './views/DeliveryView';
+import { AdminView } from './views/AdminView';
+
+const products = initialProducts; // alias for components that reference it directly
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -20,6 +25,7 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   pending: 'En attente',
   confirmed: 'Confirmée',
   preparing: 'En préparation',
+  ready: 'Prêt ✓',
   picked_up: 'Récupérée',
   delivering: 'En livraison',
   delivered: 'Livrée ✓',
@@ -30,6 +36,7 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: 'text-yellow-700 bg-yellow-50',
   confirmed: 'text-blue-700 bg-blue-50',
   preparing: 'text-orange-700 bg-orange-50',
+  ready: 'text-green-700 bg-green-100',
   picked_up: 'text-purple-700 bg-purple-50',
   delivering: 'text-green-700 bg-green-50',
   delivered: 'text-gray-600 bg-gray-100',
@@ -1048,299 +1055,18 @@ const ProfileView: React.FC = () => (
   </div>
 );
 
-// ─── DeliveryView ────────────────────────────────────────────────────────────
-
-const DeliveryView: React.FC<{
-  orders: Order[];
-  dps: DeliveryPerson[];
-  onUpdate: (id: string, status: OrderStatus) => void;
-}> = ({ orders, dps, onUpdate }) => {
-  const me = dps[0];
-  const available = orders.filter(o => ['confirmed', 'preparing'].includes(o.status) && !o.deliveryPersonId);
-  const active = orders.filter(o => ['picked_up', 'delivering'].includes(o.status));
-
-  return (
-    <div className="pb-24">
-      <div className="bg-gradient-to-br from-blue-700 to-blue-900 px-5 py-6">
-        <div className="flex justify-between items-start mb-5">
-          <div>
-            <p className="text-blue-300 text-xs font-bold uppercase tracking-widest mb-1">Interface Livreur</p>
-            <h1 className="text-white font-black text-2xl">Bonjour, {me.name.split(' ')[0]} 👋</h1>
-          </div>
-          <div className="text-right">
-            <span className={`text-[10px] font-black px-2 py-1 rounded-full ${me.isAvailable ? 'bg-green-400/30 text-green-200' : 'bg-red-400/30 text-red-200'}`}>
-              {me.isAvailable ? '🟢 Disponible' : '🔴 Occupé'}
-            </span>
-            <p className="text-blue-300 text-xs mt-1">{me.vehicle === 'moto' ? '🏍️ Moto' : me.vehicle === 'velo' ? '🚲 Vélo' : '🚗 Voiture'}</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: 'Livraisons', value: me.totalDeliveries, emoji: '📦' },
-            { label: 'Note', value: `${me.rating} ⭐`, emoji: '' },
-            { label: 'En attente', value: available.length, emoji: '🔔' },
-          ].map(stat => (
-            <div key={stat.label} className="bg-white/10 rounded-2xl p-3 text-center">
-              <p className="text-xl mb-1">{stat.emoji}</p>
-              <p className="font-black text-white text-lg">{stat.value}</p>
-              <p className="text-[10px] text-blue-200 font-medium">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="px-4 mt-4 space-y-4">
-        {active.length > 0 && (
-          <div>
-            <h2 className="font-black text-gray-900 mb-3">🚀 En cours</h2>
-            {active.map(order => (
-              <div key={order.id} className={`border-2 rounded-2xl p-4 space-y-3 mb-3 ${order.orderType === 'shopping' ? 'bg-orange-50 border-orange-200' : 'bg-blue-50 border-blue-200'}`}>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1"><TypeBadge type={order.orderType} /></div>
-                    <p className="font-black text-gray-900">{order.orderType === 'shopping' ? 'Courses au marché' : order.shopName}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">📍 {order.deliveryNeighborhood} · {order.customerName}</p>
-                  </div>
-                  <StatusBadge status={order.status} />
-                </div>
-
-                {order.orderType === 'shopping' && order.shoppingList && (
-                  <div className="bg-white rounded-xl p-3 space-y-1">
-                    <p className="text-xs font-black text-orange-700 mb-1">🛒 Liste à acheter :</p>
-                    {order.shoppingList.map(i => (
-                      <p key={i.id} className="text-xs text-gray-700">• {i.name} — {i.quantity}</p>
-                    ))}
-                    {order.depositAmount && (
-                      <p className="text-xs font-black text-green-600 mt-2 pt-2 border-t border-gray-100">
-                        💰 Budget client : {fmt(order.depositAmount)} (rendez la monnaie)
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                <p className="text-xs text-gray-600 bg-white/70 rounded-lg px-3 py-2">📫 {order.deliveryAddress}</p>
-
-                <div className="flex gap-2">
-                  {order.status === 'picked_up' && (
-                    <button onClick={() => onUpdate(order.id, 'delivering')} className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-black text-sm">
-                      {order.orderType === 'shopping' ? 'Partir livrer le client 🛵' : 'Démarrer la livraison 🛵'}
-                    </button>
-                  )}
-                  {order.status === 'delivering' && (
-                    <button onClick={() => onUpdate(order.id, 'delivered')} className="flex-1 bg-green-600 text-white py-3 rounded-xl font-black text-sm">
-                      {order.orderType === 'shopping' ? 'Livré + monnaie rendue ✅' : 'Marquer comme livrée ✅'}
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div>
-          <h2 className="font-black text-gray-900 mb-3">🔔 Commandes disponibles ({available.length})</h2>
-          {available.length === 0 ? (
-            <div className="text-center py-10 text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-              <p className="text-4xl mb-2">😴</p>
-              <p className="font-bold text-sm">Aucune commande pour le moment</p>
-            </div>
-          ) : available.map(order => (
-            <div key={order.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3 mb-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-2 mb-1"><TypeBadge type={order.orderType} /></div>
-                  <p className="font-black text-gray-900">
-                    {order.orderType === 'shopping' ? '🛒 Courses à faire' : order.shopName}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {order.orderType === 'shopping'
-                      ? `${order.shoppingList?.length ?? 0} articles à acheter · Budget ${fmt(order.depositAmount ?? 0)}`
-                      : `${order.items.reduce((s, i) => s + i.quantity, 0)} article(s) · ${fmt(order.total)}`}
-                  </p>
-                </div>
-                <span className="text-xs font-black text-orange-600 bg-orange-50 border border-orange-100 px-2 py-1 rounded-lg">💰 Commission</span>
-              </div>
-
-              {order.orderType === 'shopping' && order.shoppingList && (
-                <div className="bg-orange-50 rounded-xl p-3 space-y-1">
-                  {order.shoppingList.slice(0, 3).map(i => (
-                    <p key={i.id} className="text-xs text-orange-700">• {i.name} — {i.quantity}</p>
-                  ))}
-                  {order.shoppingList.length > 3 && (
-                    <p className="text-xs text-orange-400 font-bold">+{order.shoppingList.length - 3} autres articles...</p>
-                  )}
-                </div>
-              )}
-
-              <div className="bg-gray-50 rounded-xl px-3 py-2">
-                <p className="text-xs text-gray-500">📍 Livrer à : {order.deliveryNeighborhood} · {fmt(order.deliveryFee)}</p>
-                {order.shoppingFee && <p className="text-xs text-orange-500 font-bold">+ Frais de courses : {fmt(order.shoppingFee)}</p>}
-                <p className="text-xs text-gray-400 mt-0.5">{order.deliveryAddress}</p>
-              </div>
-
-              <div className="flex gap-2">
-                <button onClick={() => onUpdate(order.id, 'picked_up')} className="flex-1 bg-primary text-white py-3 rounded-xl font-black text-sm">
-                  {order.orderType === 'shopping' ? 'Accepter les courses ✓' : 'Accepter la livraison ✓'}
-                </button>
-                <button className="px-4 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">Refuser</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ─── AdminView ───────────────────────────────────────────────────────────────
-
-const AdminView: React.FC<{
-  orders: Order[];
-  dps: DeliveryPerson[];
-}> = ({ orders, dps }) => {
-  const delivered = orders.filter(o => o.status === 'delivered');
-  const revenue = delivered.reduce((s, o) => s + o.total, 0);
-  const shoppingRevenue = delivered.filter(o => o.orderType === 'shopping').reduce((s, o) => s + (o.shoppingFee ?? 0) + o.deliveryFee, 0);
-  const deliveryRevenue = delivered.filter(o => o.orderType === 'delivery').reduce((s, o) => s + o.deliveryFee, 0);
-  const active = orders.filter(o => ['delivering', 'picked_up', 'preparing', 'confirmed'].includes(o.status)).length;
-  const available = dps.filter(d => d.isAvailable).length;
-  const shoppingOrders = orders.filter(o => o.orderType === 'shopping').length;
-
-  return (
-    <div className="pb-24">
-      <div className="bg-gradient-to-br from-gray-900 to-gray-700 px-5 py-6">
-        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Administration</p>
-        <h1 className="text-white font-black text-2xl">🏢 Tableau de Bord</h1>
-        <p className="text-gray-400 text-xs mt-1">
-          {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-        </p>
-      </div>
-
-      <div className="px-4 mt-4 space-y-4">
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { label: 'Commandes totales', value: orders.length, emoji: '📦', color: 'bg-blue-50 border-blue-100 text-blue-800' },
-            { label: 'Revenus frais', value: fmt(deliveryRevenue + shoppingRevenue), emoji: '💰', color: 'bg-green-50 border-green-100 text-green-800' },
-            { label: 'En cours', value: active, emoji: '🛵', color: 'bg-orange-50 border-orange-100 text-orange-800' },
-            { label: 'Livreurs dispo.', value: `${available}/${dps.length}`, emoji: '👤', color: 'bg-purple-50 border-purple-100 text-purple-800' },
-          ].map(stat => (
-            <div key={stat.label} className={`${stat.color} border rounded-2xl p-4`}>
-              <p className="text-2xl mb-1">{stat.emoji}</p>
-              <p className="font-black text-xl">{stat.value}</p>
-              <p className="text-xs font-medium opacity-70 leading-tight mt-0.5">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Services breakdown */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <p className="font-black text-gray-900 text-sm mb-3">📊 Répartition des services</p>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="flex-1 bg-blue-100 rounded-full h-3 overflow-hidden">
-                <div className="bg-blue-500 h-full rounded-full" style={{ width: `${(orders.filter(o => o.orderType === 'delivery').length / orders.length) * 100}%` }} />
-              </div>
-              <span className="text-xs font-bold text-gray-600 w-24 text-right">
-                🛍️ {orders.filter(o => o.orderType === 'delivery').length} livraisons
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex-1 bg-orange-100 rounded-full h-3 overflow-hidden">
-                <div className="bg-orange-500 h-full rounded-full" style={{ width: `${(shoppingOrders / orders.length) * 100}%` }} />
-              </div>
-              <span className="text-xs font-bold text-gray-600 w-24 text-right">
-                🛒 {shoppingOrders} courses
-              </span>
-            </div>
-          </div>
-          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between text-xs">
-            <span className="text-gray-500">Revenus livraisons</span><span className="font-black text-primary">{fmt(deliveryRevenue)}</span>
-          </div>
-          <div className="flex justify-between text-xs mt-1">
-            <span className="text-gray-500">Revenus courses (+livraison)</span><span className="font-black text-orange-600">{fmt(shoppingRevenue)}</span>
-          </div>
-        </div>
-
-        {/* Delivery fees table */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <p className="font-black text-gray-900 text-sm mb-3">🛵 Tarifs par quartier</p>
-          <div className="grid grid-cols-2 gap-2">
-            {Object.entries(DELIVERY_FEES).map(([q, fee]) => (
-              <div key={q} className="flex justify-between bg-gray-50 rounded-xl px-3 py-2">
-                <span className="text-xs text-gray-600 font-medium">{q}</span>
-                <span className="text-xs font-black text-primary">{fmt(fee)}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between text-xs">
-            <span className="text-gray-500">Supplément courses</span><span className="font-black text-orange-600">+{fmt(SHOPPING_FEE)}</span>
-          </div>
-        </div>
-
-        {/* Livreurs */}
-        <div>
-          <h2 className="font-black text-gray-900 mb-3">👤 Livreurs</h2>
-          <div className="space-y-2">
-            {dps.map(dp => (
-              <div key={dp.id} className="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-gray-100">
-                <div className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-2xl">{dp.avatar}</div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm text-gray-900">{dp.name}</p>
-                  <p className="text-xs text-gray-400">
-                    {dp.vehicle === 'moto' ? '🏍️' : dp.vehicle === 'velo' ? '🚲' : '🚗'} {dp.totalDeliveries} livraisons · ⭐{dp.rating}
-                  </p>
-                </div>
-                <span className={`text-[10px] font-black px-2 py-1 rounded-lg ${dp.isAvailable ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                  {dp.isAvailable ? 'Dispo.' : 'En livraison'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent orders */}
-        <div>
-          <h2 className="font-black text-gray-900 mb-3">📋 Toutes les commandes</h2>
-          <div className="space-y-2">
-            {[...orders]
-              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-              .map(order => (
-                <div key={order.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                  <div className="flex justify-between items-center mb-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-black text-xs text-primary">{order.id}</p>
-                      <TypeBadge type={order.orderType} />
-                    </div>
-                    <StatusBadge status={order.status} />
-                  </div>
-                  <p className="font-bold text-sm text-gray-900">{order.customerName}</p>
-                  <p className="text-xs text-gray-400">
-                    {order.orderType === 'shopping' ? '🛒 Courses' : order.shopName} · {order.deliveryNeighborhood} · {fmtTime(order.createdAt)}
-                  </p>
-                  {order.deliveryPersonName && <p className="text-xs text-blue-500 mt-0.5">🛵 {order.deliveryPersonName}</p>}
-                  <div className="flex justify-between mt-1">
-                    <p className="font-black text-sm text-primary">{fmt(order.total)}</p>
-                    {order.shoppingFee && <p className="text-xs text-orange-500 font-bold">dont {fmt(order.shoppingFee)} frais courses</p>}
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // ─── main app ──────────────────────────────────────────────────────────────────
 
 const App: React.FC = () => {
   const [role, setRole] = useState<UserRole>('customer');
+  const [activeSupplierShopId, setActiveSupplierShopId] = useState<string>('s1');
   const [view, setView] = useState<string>('home');
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>(mockOrders);
   const [dps] = useState<DeliveryPerson[]>(initialDrivers);
+  const [productList, setProductList] = useState<Product[]>(initialProducts);
+  const [supplierAccounts, setSupplierAccounts] = useState<SupplierAccount[]>(mockSupplierAccounts);
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
   const [trackingOrder, setTrackingOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1434,24 +1160,43 @@ const App: React.FC = () => {
     setTrackingOrder(prev => prev?.id === orderId ? { ...prev, status } : prev);
   };
 
+  const toggleProduct = (productId: string) => {
+    setProductList(prev => prev.map(p => p.id === productId ? { ...p, available: !p.available } : p));
+  };
+
+  const updateSupplierStatus = (supplierId: string, status: SupplierStatus) => {
+    setSupplierAccounts(prev => prev.map(s => s.id === supplierId ? { ...s, status } : s));
+  };
+
+  const addSupplier = (account: SupplierAccount) => {
+    setSupplierAccounts(prev => [...prev, account]);
+  };
+
   const switchRole = (r: UserRole) => {
     setRole(r);
-    setView(r === 'customer' ? 'home' : r === 'delivery' ? 'delivery' : 'admin');
+    if (r === 'customer') setView('home');
+    else if (r === 'delivery') setView('delivery');
+    else if (r === 'admin') setView('admin');
+    else if (r === 'supplier') setView('supplier');
   };
+
+  const activeSupplier = supplierAccounts.find(s => s.shopId === activeSupplierShopId);
+  const activeSupplierShop = shops.find(s => s.id === activeSupplierShopId) ?? null;
 
   return (
     <div className="min-h-screen bg-gray-50 max-w-lg mx-auto relative font-sans">
       {/* Role switcher — demo bar */}
-      <div className="bg-gray-900 px-4 py-2 flex gap-2 justify-center sticky top-0 z-50">
+      <div className="bg-gray-900 px-2 py-2 flex gap-1 justify-center sticky top-0 z-50 overflow-x-auto">
         {([
           ['customer', '👤 Client'],
           ['delivery', '🛵 Livreur'],
+          ['supplier', '🏪 Fournisseur'],
           ['admin', '🏢 Admin'],
         ] as [UserRole, string][]).map(([r, label]) => (
           <button
             key={r}
             onClick={() => switchRole(r)}
-            className={`px-3 py-1.5 rounded-full text-xs font-black transition-all ${
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-black transition-all ${
               role === r ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-white'
             }`}
           >
@@ -1460,13 +1205,44 @@ const App: React.FC = () => {
         ))}
       </div>
 
+      {/* Supplier shop selector */}
+      {role === 'supplier' && (
+        <div className="bg-gray-800 px-3 py-1.5 flex gap-2 overflow-x-auto">
+          {supplierAccounts.filter(s => s.status === 'active').map(s => (
+            <button
+              key={s.shopId}
+              onClick={() => setActiveSupplierShopId(s.shopId)}
+              className={`flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-full transition-all ${
+                activeSupplierShopId === s.shopId ? 'bg-primary text-white' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {s.shopName}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Header */}
-      <header className="bg-primary text-white px-4 py-3 flex items-center justify-between shadow-lg sticky top-10 z-40">
+      <header className={`text-white px-4 py-3 flex items-center justify-between shadow-lg sticky z-40 ${
+        role === 'supplier' ? 'top-[4.75rem]' : 'top-10'
+      } ${
+        role === 'delivery' ? 'bg-blue-800' :
+        role === 'supplier' ? 'bg-emerald-700' :
+        role === 'admin' ? 'bg-gray-800' :
+        'bg-primary'
+      }`}>
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🛵</span>
+          <span className="text-2xl">
+            {role === 'delivery' ? '🛵' : role === 'supplier' ? '🏪' : role === 'admin' ? '🏢' : '🛵'}
+          </span>
           <div>
             <h1 className="font-black text-sm leading-none">Abengourou Express</h1>
-            <p className="text-[10px] text-green-200 font-medium">Livraison & Courses rapides</p>
+            <p className="text-[10px] text-white/60 font-medium">
+              {role === 'delivery' ? 'Interface Livreur' :
+               role === 'supplier' ? (activeSupplierShop?.name ?? 'Fournisseur') :
+               role === 'admin' ? 'Administration' :
+               'Livraison & Courses rapides'}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -1557,8 +1333,25 @@ const App: React.FC = () => {
           <DeliveryView orders={orders} dps={dps} onUpdate={updateStatus} />
         )}
 
+        {role === 'supplier' && activeSupplier && activeSupplierShop && (
+          <SupplierView
+            supplier={activeSupplier}
+            shop={activeSupplierShop}
+            orders={orders}
+            products={productList}
+            onUpdateStatus={updateStatus}
+            onToggleProduct={toggleProduct}
+          />
+        )}
+
         {role === 'admin' && (
-          <AdminView orders={orders} dps={dps} />
+          <AdminView
+            orders={orders}
+            dps={dps}
+            supplierAccounts={supplierAccounts}
+            onUpdateSupplierStatus={updateSupplierStatus}
+            onAddSupplier={addSupplier}
+          />
         )}
       </main>
     </div>

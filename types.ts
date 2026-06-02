@@ -1,9 +1,19 @@
 
-export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'picked_up' | 'delivering' | 'delivered' | 'cancelled';
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'ready'
+  | 'picked_up'
+  | 'delivering'
+  | 'delivered'
+  | 'cancelled';
+
 export type PaymentMethod = 'cash' | 'orange_money' | 'mtn_money';
-export type UserRole = 'customer' | 'delivery' | 'admin';
+export type UserRole = 'customer' | 'delivery' | 'supplier' | 'admin';
 export type ShopCategory = 'restaurant' | 'pharmacy' | 'supermarket' | 'bakery' | 'drinks';
 export type OrderType = 'delivery' | 'shopping';
+export type SupplierStatus = 'active' | 'pending' | 'suspended';
 
 export interface ShoppingItem {
   id: string;
@@ -82,4 +92,17 @@ export interface Order {
   createdAt: string;
   estimatedDelivery?: string;
   notes?: string;
+}
+
+export interface SupplierAccount {
+  id: string;
+  shopId: string;
+  shopName: string;
+  ownerName: string;
+  email: string;
+  phone: string;
+  status: SupplierStatus;
+  joinedDate: string;
+  commissionRate: number;
+  accessCode: string;
 }
