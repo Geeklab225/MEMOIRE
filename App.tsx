@@ -392,9 +392,11 @@ const CartView: React.FC<{
   shop: Shop | null;
   onAdd: (p: Product) => void;
   onRemove: (id: string) => void;
-  onPlaceOrder: (address: string, neighborhood: string, payment: PaymentMethod, notes: string) => void;
+  onPlaceOrder: (name: string, phone: string, address: string, neighborhood: string, payment: PaymentMethod, notes: string) => void;
   onBack: () => void;
 }> = ({ cart, shop, onAdd, onRemove, onPlaceOrder, onBack }) => {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [neighborhood, setNeighborhood] = useState(NEIGHBORHOODS[0]);
   const [payment, setPayment] = useState<PaymentMethod>('cash');
@@ -448,6 +450,27 @@ const CartView: React.FC<{
           ))}
         </div>
 
+        {/* Customer info */}
+        <div className="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-gray-100">
+          <h3 className="font-black text-gray-900 flex items-center gap-2 text-sm">
+            <User className="w-4 h-4 text-primary" /> Vos informations
+          </h3>
+          <input
+            type="text"
+            placeholder="Nom et prénom *"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none focus:border-primary transition-colors"
+          />
+          <input
+            type="tel"
+            placeholder="Numéro de téléphone * (ex: 07 00 00 00 00)"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none focus:border-primary transition-colors"
+          />
+        </div>
+
         {/* Address */}
         <div className="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-gray-100">
           <h3 className="font-black text-gray-900 flex items-center gap-2 text-sm">
@@ -467,10 +490,10 @@ const CartView: React.FC<{
           </div>
           <input
             type="text"
-            placeholder="Rue, maison, point de repère..."
+            placeholder="Lieu de livraison — Rue, maison, point de repère *"
             value={address}
             onChange={e => setAddress(e.target.value)}
-            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none"
+            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none focus:border-primary transition-colors"
           />
           <input
             type="text"
@@ -517,10 +540,10 @@ const CartView: React.FC<{
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 max-w-lg mx-auto">
         <button
-          onClick={() => address.trim() && onPlaceOrder(address, neighborhood, payment, notes)}
-          className={`w-full py-4 rounded-2xl font-black text-white transition-all ${address.trim() ? 'bg-primary shadow-xl hover:bg-green-700' : 'bg-gray-200 text-gray-400'}`}
+          onClick={() => name.trim() && phone.trim() && address.trim() && onPlaceOrder(name.trim(), phone.trim(), address, neighborhood, payment, notes)}
+          className={`w-full py-4 rounded-2xl font-black text-white transition-all ${name.trim() && phone.trim() && address.trim() ? 'bg-primary shadow-xl hover:bg-green-700' : 'bg-gray-200 text-gray-400'}`}
         >
-          {address.trim() ? `Commander · ${fmt(total)}` : 'Ajoutez une adresse de livraison'}
+          {name.trim() && phone.trim() && address.trim() ? `Commander · ${fmt(total)}` : 'Remplissez vos informations'}
         </button>
       </div>
     </div>
@@ -532,6 +555,8 @@ const CartView: React.FC<{
 const ShoppingView: React.FC<{
   onBack: () => void;
   onSubmit: (params: {
+    name: string;
+    phone: string;
     items: ShoppingItem[];
     neighborhood: string;
     address: string;
@@ -541,6 +566,8 @@ const ShoppingView: React.FC<{
     notes: string;
   }) => void;
 }> = ({ onBack, onSubmit }) => {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [items, setItems] = useState<ShoppingItem[]>([
     { id: uid(), name: '', quantity: '' },
   ]);
@@ -562,7 +589,7 @@ const ShoppingView: React.FC<{
     setItems(prev => prev.map(i => i.id === id ? { ...i, [field]: val } : i));
 
   const validItems = items.filter(i => i.name.trim());
-  const canSubmit = validItems.length > 0 && address.trim() && deposit > 0;
+  const canSubmit = validItems.length > 0 && name.trim() && phone.trim() && address.trim() && (!doShopping || deposit > 0);
 
   return (
     <div className="pb-32">
@@ -648,6 +675,27 @@ const ShoppingView: React.FC<{
           </div>
         </div>
 
+        {/* Customer info */}
+        <div className="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-gray-100">
+          <h3 className="font-black text-gray-900 flex items-center gap-2 text-sm">
+            <User className="w-4 h-4 text-orange-500" /> Vos informations
+          </h3>
+          <input
+            type="text"
+            placeholder="Nom et prénom *"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none focus:border-orange-400 transition-colors"
+          />
+          <input
+            type="tel"
+            placeholder="Numéro de téléphone * (ex: 07 00 00 00 00)"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none focus:border-orange-400 transition-colors"
+          />
+        </div>
+
         {/* Address */}
         <div className="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-gray-100">
           <h3 className="font-black text-gray-900 flex items-center gap-2 text-sm">
@@ -667,10 +715,10 @@ const ShoppingView: React.FC<{
           </div>
           <input
             type="text"
-            placeholder="Rue, maison, point de repère..."
+            placeholder="Lieu de livraison — Rue, maison, point de repère *"
             value={address}
             onChange={e => setAddress(e.target.value)}
-            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none"
+            className="w-full p-3 bg-gray-50 rounded-xl text-sm border border-gray-100 outline-none focus:border-primary transition-colors"
           />
           <input
             type="text"
@@ -762,7 +810,7 @@ const ShoppingView: React.FC<{
           <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-3 flex gap-2 items-start">
             <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0 mt-0.5" />
             <p className="text-xs text-yellow-700 font-medium">
-              {!address.trim() ? "Ajoutez votre adresse de livraison." : "Entrez le montant du dépôt pour vos achats."}
+              {!name.trim() || !phone.trim() ? "Renseignez votre nom et téléphone." : !address.trim() ? "Ajoutez votre adresse de livraison." : "Entrez le montant du dépôt pour vos achats."}
             </p>
           </div>
         )}
@@ -770,7 +818,7 @@ const ShoppingView: React.FC<{
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 max-w-lg mx-auto">
         <button
-          onClick={() => canSubmit && onSubmit({ items: validItems, neighborhood, address, depositAmount: deposit, doShopping, payment, notes })}
+          onClick={() => canSubmit && onSubmit({ name: name.trim(), phone: phone.trim(), items: validItems, neighborhood, address, depositAmount: deposit, doShopping, payment, notes })}
           className={`w-full py-4 rounded-2xl font-black text-white transition-all ${canSubmit ? 'bg-orange-500 shadow-xl hover:bg-orange-600' : 'bg-gray-200 text-gray-400'}`}
         >
           {canSubmit ? `Valider ma liste · ${fmt(total)}` : 'Complétez le formulaire'}
@@ -990,7 +1038,6 @@ const HistoryView: React.FC<{
   onTrack: (o: Order) => void;
 }> = ({ orders, onTrack }) => {
   const mine = [...orders]
-    .filter(o => o.customerName === 'Adjoua Koffi')
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
@@ -1154,14 +1201,14 @@ const App: React.FC = () => {
 
   // ── Place order (delivery) ────────────────────────────────
 
-  const placeOrder = async (address: string, neighborhood: string, payment: PaymentMethod, notes: string) => {
+  const placeOrder = async (name: string, phone: string, address: string, neighborhood: string, payment: PaymentMethod, notes: string) => {
     const subtotal = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
     const deliveryFee = DELIVERY_FEES[neighborhood] ?? 500;
     const id = genId();
 
     const order: Order = {
       id, orderType: 'delivery',
-      customerName: 'Adjoua Koffi', customerPhone: '+225 07 77 88 99',
+      customerName: name, customerPhone: phone,
       shopId: selectedShop?.id ?? '', shopName: selectedShop?.name ?? '',
       items: cart, status: 'confirmed',
       paymentMethod: payment, deliveryAddress: address, deliveryNeighborhood: neighborhood,
@@ -1201,6 +1248,8 @@ const App: React.FC = () => {
   // ── Place order (courses) ─────────────────────────────────
 
   const placeShoppingOrder = async (params: {
+    name: string;
+    phone: string;
     items: ShoppingItem[];
     neighborhood: string;
     address: string;
@@ -1215,7 +1264,7 @@ const App: React.FC = () => {
 
     const order: Order = {
       id, orderType: 'shopping',
-      customerName: 'Adjoua Koffi', customerPhone: '+225 07 77 88 99',
+      customerName: params.name, customerPhone: params.phone,
       shopId: '', shopName: 'Courses au marché', items: [],
       shoppingList: params.items,
       depositAmount: params.doShopping ? params.depositAmount : undefined,
