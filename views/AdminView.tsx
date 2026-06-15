@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Plus, Check, X, Key, TrendingUp, Users, Package, ShoppingBag } from 'lucide-react';
 import { Order, DeliveryPerson, SupplierAccount, SupplierStatus } from '../types';
 import { DELIVERY_FEES, SHOPPING_FEE, generateAccessCode } from '../data/mockData';
+import { generateCustomerReceipt, generateDeliverySlip, generateAdminOrderReport } from '../lib/pdf';
 
 const fmt = (n: number) => `${n.toLocaleString('fr-FR')} FCFA`;
 const fmtDate = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -239,6 +240,15 @@ export const AdminView: React.FC<Props> = ({ orders, dps, supplierAccounts, onUp
                 </div>
               ))}
             </div>
+
+            {/* Rapport global PDF */}
+            <button
+              onClick={() => generateAdminOrderReport(orders)}
+              className="w-full bg-gray-900 text-white py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors mb-1"
+            >
+              📊 Exporter le rapport PDF ({orders.length} commandes)
+            </button>
+
             {orders.map(order => (
               <div key={order.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
                 <div className="flex justify-between items-start mb-2">
@@ -264,7 +274,23 @@ export const AdminView: React.FC<Props> = ({ orders, dps, supplierAccounts, onUp
                       ? `${order.items.reduce((s, i) => s + i.quantity, 0)} article(s) chez ${order.shopName}`
                       : `${order.shoppingList?.length ?? 0} articles à acheter`}
                   </p>
-                  <p className="font-black text-primary text-sm">{fmt(order.total)}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-black text-primary text-sm">{fmt(order.total)}</p>
+                    <button
+                      onClick={() => generateCustomerReceipt(order)}
+                      className="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-1 rounded-lg hover:bg-green-100 transition-colors"
+                      title="Reçu client PDF"
+                    >
+                      📄 Client
+                    </button>
+                    <button
+                      onClick={() => generateDeliverySlip(order)}
+                      className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded-lg hover:bg-blue-100 transition-colors"
+                      title="Bon de livraison PDF"
+                    >
+                      🛵 Bon
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

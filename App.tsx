@@ -14,6 +14,7 @@ import { LoginScreen } from './components/LoginScreen';
 import { useRealtimeOrders } from './hooks/useRealtimeOrders';
 import { useSupabaseData } from './hooks/useSupabaseData';
 import { supabase, insertOrder } from './lib/supabase';
+import { generateCustomerReceipt } from './lib/pdf';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -825,6 +826,14 @@ const ConfirmView: React.FC<{
         </div>
       </>
     )}
+    {order && (
+      <button
+        onClick={() => generateCustomerReceipt(order)}
+        className="w-full mb-3 bg-green-50 border border-green-200 text-green-700 py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-green-100 transition-colors"
+      >
+        📄 Télécharger le reçu PDF
+      </button>
+    )}
     <div className="flex gap-3 w-full">
       <button onClick={onTrack} className="flex-1 bg-primary text-white py-4 rounded-2xl font-black shadow-lg">
         Suivre ma commande
@@ -1015,13 +1024,21 @@ const HistoryView: React.FC<{
                 ? order.shoppingList.map(i => `${i.name} (${i.quantity})`).join(', ')
                 : order.items.map(i => `${i.product.name} ×${i.quantity}`).join(', ')}
             </p>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-2">
               <p className="font-black text-primary">{fmt(order.total)}</p>
-              {['delivering', 'picked_up', 'preparing', 'confirmed'].includes(order.status) && (
-                <button onClick={() => onTrack(order)} className="text-primary text-xs font-bold bg-green-50 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-green-100 transition-colors">
-                  Suivre <ChevronRight className="w-3 h-3" />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => generateCustomerReceipt(order)}
+                  className="text-green-700 text-xs font-bold bg-green-50 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-green-100 transition-colors"
+                >
+                  📄 Reçu
                 </button>
-              )}
+                {['delivering', 'picked_up', 'preparing', 'confirmed'].includes(order.status) && (
+                  <button onClick={() => onTrack(order)} className="text-primary text-xs font-bold bg-green-50 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-green-100 transition-colors">
+                    Suivre <ChevronRight className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         ))}

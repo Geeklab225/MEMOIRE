@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Phone, MapPin, Package, CheckCircle, TrendingUp, Navigation } from 'lucide-react';
 import { Order, DeliveryPerson, OrderStatus } from '../types';
+import { generateDeliverySlip } from '../lib/pdf';
 
 const fmt = (n: number) => `${n.toLocaleString('fr-FR')} FCFA`;
 const fmtTime = (iso: string) =>
@@ -183,8 +184,15 @@ export const DeliveryView: React.FC<Props> = ({ orders, dps, onUpdate }) => {
                       ? 'Accepter les courses ✓'
                       : 'Accepter la livraison ✓'}
                   </button>
-                  <button className="px-4 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors">
-                    Refuser
+                  <button
+                    onClick={() => generateDeliverySlip(order)}
+                    className="px-3 py-3 bg-green-50 text-green-700 rounded-xl font-bold text-sm hover:bg-green-100 transition-colors"
+                    title="Bon de livraison PDF"
+                  >
+                    📄
+                  </button>
+                  <button className="px-3 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors">
+                    ✗
                   </button>
                 </div>
               </div>
@@ -268,6 +276,13 @@ export const DeliveryView: React.FC<Props> = ({ orders, dps, onUpdate }) => {
                       {order.orderType === 'shopping' ? 'Livré + monnaie rendue ✅' : 'Marquer comme livrée ✅'}
                     </button>
                   )}
+                  <button
+                    onClick={() => generateDeliverySlip(order)}
+                    className="px-3 py-3 bg-white/80 text-green-700 rounded-xl font-bold text-sm hover:bg-white transition-colors border border-green-200"
+                    title="Bon de livraison PDF"
+                  >
+                    📄
+                  </button>
                 </div>
               </div>
             ))}
