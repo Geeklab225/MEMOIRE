@@ -6,12 +6,14 @@ import {
   ArrowLeft, Bell, ShoppingBag, Trash2, AlertCircle, Package,
 } from 'lucide-react';
 import { Shop, Product, CartItem, Order, DeliveryPerson, UserRole, OrderStatus, PaymentMethod, ShoppingItem, SupplierAccount, SupplierStatus } from './types';
-import { shops, products as initialProducts, deliveryPersons as initialDrivers, mockOrders, mockSupplierAccounts, DELIVERY_FEES, SHOPPING_FEE, NEIGHBORHOODS } from './data/mockData';
+import { DELIVERY_FEES, SHOPPING_FEE, NEIGHBORHOODS } from './data/mockData';
 import { SupplierView } from './views/SupplierView';
 import { DeliveryView } from './views/DeliveryView';
 import { AdminView } from './views/AdminView';
-
-const products = initialProducts; // alias for components that reference it directly
+import { LoginScreen } from './components/LoginScreen';
+import { useRealtimeOrders } from './hooks/useRealtimeOrders';
+import { useSupabaseData } from './hooks/useSupabaseData';
+import { supabase, insertOrder } from './lib/supabase';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -170,13 +172,14 @@ const BottomNav: React.FC<{ view: string; setView: (v: string) => void; cartCoun
 // ─── HomeView ────────────────────────────────────────────────────────────────
 
 const HomeView: React.FC<{
+  shops: Shop[];
   onShopSelect: (shop: Shop) => void;
   onGoShopping: () => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   selectedCategory: string;
   setSelectedCategory: (c: string) => void;
-}> = ({ onShopSelect, onGoShopping, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory }) => {
+}> = ({ shops, onShopSelect, onGoShopping, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory }) => {
   const filtered = useMemo(() => {
     return shops.filter(s => {
       const matchCat = selectedCategory === 'all' || s.category === selectedCategory;
@@ -316,12 +319,13 @@ const HomeView: React.FC<{
 
 const ShopView: React.FC<{
   shop: Shop;
+  products: Product[];
   cart: CartItem[];
   onAdd: (p: Product) => void;
   onRemove: (id: string) => void;
   onBack: () => void;
   onGoCart: () => void;
-}> = ({ shop, cart, onAdd, onRemove, onBack, onGoCart }) => {
+}> = ({ shop, products, cart, onAdd, onRemove, onBack, onGoCart }) => {
   const shopProducts = products.filter(p => p.shopId === shop.id);
   const categories = [...new Set(shopProducts.map(p => p.category))];
   const total = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
@@ -1028,7 +1032,7 @@ const HistoryView: React.FC<{
 
 // ─── ProfileView ─────────────────────────────────────────────────────────────
 
-const ProfileView: React.FC = () => (
+const ProfileView: React.FC<{ onLogout: () => void }> = ({ onLogout }) => (
   <div className="pb-24">
     <div className="bg-gradient-to-br from-primary to-green-700 px-5 py-8 flex flex-col items-center">
       <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-4xl mb-3">👩🏿</div>
@@ -1051,28 +1055,70 @@ const ProfileView: React.FC = () => (
           <ChevronRight className="w-4 h-4 text-gray-300" />
         </div>
       ))}
+      <button
+        onClick={onLogout}
+        className="w-full bg-red-50 text-red-600 border border-red-100 rounded-2xl p-4 font-bold text-sm hover:bg-red-100 transition-colors"
+      >
+        🚪 Se déconnecter
+      </button>
     </div>
   </div>
 );
 
+
 // ─── main app ──────────────────────────────────────────────────────────────────
 
+const isSupabaseConfigured =
+  !!import.meta.env.VITE_SUPABASE_URL &&
+  import.meta.env.VITE_SUPABASE_URL !== 'https://placeholder.supabase.co';
+
 const App: React.FC = () => {
+  // ── Auth ──────────────────────────────────────────────────
+  const [isAuthenticated, setIsAuthenticated] = useState(!isSupabaseConfigured);
   const [role, setRole] = useState<UserRole>('customer');
   const [activeSupplierShopId, setActiveSupplierShopId] = useState<string>('s1');
+
+  // ── App navigation state ──────────────────────────────────
   const [view, setView] = useState<string>('home');
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
-  const [dps] = useState<DeliveryPerson[]>(initialDrivers);
-  const [productList, setProductList] = useState<Product[]>(initialProducts);
-  const [supplierAccounts, setSupplierAccounts] = useState<SupplierAccount[]>(mockSupplierAccounts);
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
   const [trackingOrder, setTrackingOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  // ── Supabase data (avec fallback mock auto) ───────────────
+  const {
+    shops, products, deliveryPersons: dps, supplierAccounts,
+    toggleProduct, updateSupplierStatus, addSupplier,
+  } = useSupabaseData();
+
+  const { orders, updateStatus } = useRealtimeOrders();
+
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
+
+  // ── Auth handlers ─────────────────────────────────────────
+
+  const handleLogin = (loginRole: UserRole, supplierId?: string) => {
+    setRole(loginRole);
+    setIsAuthenticated(true);
+    if (loginRole === 'supplier' && supplierId) {
+      // Trouver le shopId depuis l'ID ou le code d'accès
+      const supplier = supplierAccounts.find(s => s.id === supplierId || s.accessCode === supplierId);
+      if (supplier) setActiveSupplierShopId(supplier.shopId);
+    }
+    setView(loginRole === 'customer' ? 'home' : loginRole);
+  };
+
+  const handleLogout = async () => {
+    if (isSupabaseConfigured) await supabase.auth.signOut();
+    setIsAuthenticated(false);
+    setRole('customer');
+    setView('home');
+    setCart([]);
+  };
+
+  // ── Cart helpers ──────────────────────────────────────────
 
   const addToCart = (product: Product) =>
     setCart(prev => {
@@ -1089,35 +1135,55 @@ const App: React.FC = () => {
       return prev.map(i => i.product.id === productId ? { ...i, quantity: i.quantity - 1 } : i);
     });
 
-  const placeOrder = (address: string, neighborhood: string, payment: PaymentMethod, notes: string) => {
+  // ── Place order (delivery) ────────────────────────────────
+
+  const placeOrder = async (address: string, neighborhood: string, payment: PaymentMethod, notes: string) => {
     const subtotal = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
     const deliveryFee = DELIVERY_FEES[neighborhood] ?? 500;
+    const id = genId();
+
     const order: Order = {
-      id: genId(),
-      orderType: 'delivery',
-      customerName: 'Adjoua Koffi',
-      customerPhone: '+225 07 77 88 99',
-      shopId: selectedShop?.id ?? '',
-      shopName: selectedShop?.name ?? '',
-      items: cart,
-      status: 'confirmed',
-      paymentMethod: payment,
-      deliveryAddress: address,
-      deliveryNeighborhood: neighborhood,
-      subtotal,
-      deliveryFee,
-      total: subtotal + deliveryFee,
-      createdAt: new Date().toISOString(),
-      estimatedDelivery: selectedShop?.deliveryTime ?? '30 min',
+      id, orderType: 'delivery',
+      customerName: 'Adjoua Koffi', customerPhone: '+225 07 77 88 99',
+      shopId: selectedShop?.id ?? '', shopName: selectedShop?.name ?? '',
+      items: cart, status: 'confirmed',
+      paymentMethod: payment, deliveryAddress: address, deliveryNeighborhood: neighborhood,
+      subtotal, deliveryFee, total: subtotal + deliveryFee,
+      createdAt: new Date().toISOString(), estimatedDelivery: selectedShop?.deliveryTime ?? '30 min',
       notes,
     };
-    setOrders(prev => [order, ...prev]);
+
+    if (isSupabaseConfigured) {
+      try {
+        await insertOrder(
+          {
+            id, order_type: 'delivery', customer_name: order.customerName,
+            customer_phone: order.customerPhone, shop_id: order.shopId, shop_name: order.shopName,
+            status: 'confirmed', payment_method: payment, delivery_address: address,
+            delivery_neighborhood: neighborhood, delivery_person_id: null, delivery_person_name: null,
+            deposit_amount: null, subtotal, delivery_fee: deliveryFee, shopping_fee: null,
+            total: subtotal + deliveryFee, estimated_delivery: order.estimatedDelivery,
+            notes: notes || null, customer_user_id: null,
+          },
+          cart.map(i => ({
+            product_id: i.product.id, product_name: i.product.name,
+            product_price: i.product.price, product_emoji: i.product.emoji, quantity: i.quantity,
+          })),
+          [],
+        );
+      } catch (e) {
+        console.error('[placeOrder] Erreur Supabase:', e);
+      }
+    }
+
     setActiveOrder(order);
     setCart([]);
     setView('confirm');
   };
 
-  const placeShoppingOrder = (params: {
+  // ── Place order (courses) ─────────────────────────────────
+
+  const placeShoppingOrder = async (params: {
     items: ShoppingItem[];
     neighborhood: string;
     address: string;
@@ -1128,49 +1194,60 @@ const App: React.FC = () => {
   }) => {
     const deliveryFee = DELIVERY_FEES[params.neighborhood] ?? 500;
     const shoppingFee = params.doShopping ? SHOPPING_FEE : 0;
+    const id = genId();
+
     const order: Order = {
-      id: genId(),
-      orderType: 'shopping',
-      customerName: 'Adjoua Koffi',
-      customerPhone: '+225 07 77 88 99',
-      shopId: '',
-      shopName: 'Courses au marché',
-      items: [],
+      id, orderType: 'shopping',
+      customerName: 'Adjoua Koffi', customerPhone: '+225 07 77 88 99',
+      shopId: '', shopName: 'Courses au marché', items: [],
       shoppingList: params.items,
       depositAmount: params.doShopping ? params.depositAmount : undefined,
-      status: 'confirmed',
-      paymentMethod: params.payment,
-      deliveryAddress: params.address,
-      deliveryNeighborhood: params.neighborhood,
-      subtotal: 0,
-      deliveryFee,
+      status: 'confirmed', paymentMethod: params.payment,
+      deliveryAddress: params.address, deliveryNeighborhood: params.neighborhood,
+      subtotal: 0, deliveryFee,
       shoppingFee: params.doShopping ? shoppingFee : undefined,
       total: (params.doShopping ? params.depositAmount : 0) + deliveryFee + shoppingFee,
-      createdAt: new Date().toISOString(),
-      estimatedDelivery: '40-60 min',
+      createdAt: new Date().toISOString(), estimatedDelivery: '40-60 min',
       notes: params.notes,
     };
-    setOrders(prev => [order, ...prev]);
+
+    if (isSupabaseConfigured) {
+      try {
+        await insertOrder(
+          {
+            id, order_type: 'shopping', customer_name: order.customerName,
+            customer_phone: order.customerPhone, shop_id: '', shop_name: 'Courses au marché',
+            status: 'confirmed', payment_method: params.payment, delivery_address: params.address,
+            delivery_neighborhood: params.neighborhood, delivery_person_id: null, delivery_person_name: null,
+            deposit_amount: params.doShopping ? params.depositAmount : null,
+            subtotal: 0, delivery_fee: deliveryFee,
+            shopping_fee: params.doShopping ? shoppingFee : null,
+            total: order.total, estimated_delivery: '40-60 min',
+            notes: params.notes || null, customer_user_id: null,
+          },
+          [],
+          params.items.map(i => ({
+            id: i.id, name: i.name, quantity: i.quantity,
+            estimated_price: i.estimatedPrice ?? null,
+          })),
+        );
+      } catch (e) {
+        console.error('[placeShoppingOrder] Erreur Supabase:', e);
+      }
+    }
+
     setActiveOrder(order);
     setView('confirm');
   };
 
-  const updateStatus = (orderId: string, status: OrderStatus) => {
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
+  // ── Status update with tracking sync ─────────────────────
+
+  const handleUpdateStatus = async (orderId: string, status: OrderStatus) => {
+    await updateStatus(orderId, status);
     setTrackingOrder(prev => prev?.id === orderId ? { ...prev, status } : prev);
   };
 
-  const toggleProduct = (productId: string) => {
-    setProductList(prev => prev.map(p => p.id === productId ? { ...p, available: !p.available } : p));
-  };
-
-  const updateSupplierStatus = (supplierId: string, status: SupplierStatus) => {
-    setSupplierAccounts(prev => prev.map(s => s.id === supplierId ? { ...s, status } : s));
-  };
-
-  const addSupplier = (account: SupplierAccount) => {
-    setSupplierAccounts(prev => [...prev, account]);
-  };
+  // ── Demo role switcher (mode démo seulement) ──────────────
 
   const switchRole = (r: UserRole) => {
     setRole(r);
@@ -1183,31 +1260,41 @@ const App: React.FC = () => {
   const activeSupplier = supplierAccounts.find(s => s.shopId === activeSupplierShopId);
   const activeSupplierShop = shops.find(s => s.id === activeSupplierShopId) ?? null;
 
+  // ── Login screen ──────────────────────────────────────────
+
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
+
+  // ── App UI ────────────────────────────────────────────────
+
   return (
     <div className="min-h-screen bg-gray-50 max-w-lg mx-auto relative font-sans">
-      {/* Role switcher — demo bar */}
-      <div className="bg-gray-900 px-2 py-2 flex gap-1 justify-center sticky top-0 z-50 overflow-x-auto">
-        {([
-          ['customer', '👤 Client'],
-          ['delivery', '🛵 Livreur'],
-          ['supplier', '🏪 Fournisseur'],
-          ['admin', '🏢 Admin'],
-        ] as [UserRole, string][]).map(([r, label]) => (
-          <button
-            key={r}
-            onClick={() => switchRole(r)}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-black transition-all ${
-              role === r ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      {/* Demo role switcher (mode sans Supabase seulement) */}
+      {!isSupabaseConfigured && (
+        <div className="bg-gray-900 px-2 py-2 flex gap-1 justify-center sticky top-0 z-50 overflow-x-auto">
+          {([
+            ['customer', '👤 Client'],
+            ['delivery', '🛵 Livreur'],
+            ['supplier', '🏪 Fournisseur'],
+            ['admin', '🏢 Admin'],
+          ] as [UserRole, string][]).map(([r, label]) => (
+            <button
+              key={r}
+              onClick={() => switchRole(r)}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-black transition-all ${
+                role === r ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Supplier shop selector */}
       {role === 'supplier' && (
-        <div className="bg-gray-800 px-3 py-1.5 flex gap-2 overflow-x-auto">
+        <div className={`bg-gray-800 px-3 py-1.5 flex gap-2 overflow-x-auto ${!isSupabaseConfigured ? '' : 'sticky top-0 z-50'}`}>
           {supplierAccounts.filter(s => s.status === 'active').map(s => (
             <button
               key={s.shopId}
@@ -1224,7 +1311,7 @@ const App: React.FC = () => {
 
       {/* Header */}
       <header className={`text-white px-4 py-3 flex items-center justify-between shadow-lg sticky z-40 ${
-        role === 'supplier' ? 'top-[4.75rem]' : 'top-10'
+        role === 'supplier' ? 'top-[4.75rem]' : (isSupabaseConfigured ? 'top-0' : 'top-10')
       } ${
         role === 'delivery' ? 'bg-blue-800' :
         role === 'supplier' ? 'bg-emerald-700' :
@@ -1256,7 +1343,11 @@ const App: React.FC = () => {
               )}
             </button>
           )}
-          <button className="p-2 bg-white/10 rounded-xl hover:bg-white/20 transition-colors">
+          <button
+            onClick={handleLogout}
+            className="p-2 bg-white/10 rounded-xl hover:bg-white/20 transition-colors text-xs font-bold"
+            title="Déconnexion"
+          >
             <Bell className="w-5 h-5" />
           </button>
         </div>
@@ -1268,6 +1359,7 @@ const App: React.FC = () => {
           <>
             {view === 'home' && (
               <HomeView
+                shops={shops}
                 onShopSelect={shop => { setSelectedShop(shop); setCart([]); setView('shop'); }}
                 onGoShopping={() => setView('shopping')}
                 searchQuery={searchQuery}
@@ -1285,6 +1377,7 @@ const App: React.FC = () => {
             {view === 'shop' && selectedShop && (
               <ShopView
                 shop={selectedShop}
+                products={products}
                 cart={cart}
                 onAdd={addToCart}
                 onRemove={removeFromCart}
@@ -1321,7 +1414,7 @@ const App: React.FC = () => {
                 onTrack={order => { setTrackingOrder(order); setView('tracking'); }}
               />
             )}
-            {view === 'profile' && <ProfileView />}
+            {view === 'profile' && <ProfileView onLogout={handleLogout} />}
 
             {!['shop', 'cart', 'confirm', 'tracking', 'shopping'].includes(view) && (
               <BottomNav view={view} setView={setView} cartCount={cartCount} />
@@ -1330,7 +1423,7 @@ const App: React.FC = () => {
         )}
 
         {role === 'delivery' && (
-          <DeliveryView orders={orders} dps={dps} onUpdate={updateStatus} />
+          <DeliveryView orders={orders} dps={dps} onUpdate={handleUpdateStatus} />
         )}
 
         {role === 'supplier' && activeSupplier && activeSupplierShop && (
@@ -1338,8 +1431,8 @@ const App: React.FC = () => {
             supplier={activeSupplier}
             shop={activeSupplierShop}
             orders={orders}
-            products={productList}
-            onUpdateStatus={updateStatus}
+            products={products}
+            onUpdateStatus={handleUpdateStatus}
             onToggleProduct={toggleProduct}
           />
         )}
