@@ -29,6 +29,7 @@ export const shops: Shop[] = [
   { id: 's4', name: 'Boulangerie du Roi', category: 'bakery', description: 'Pain frais, viennoiseries et pâtisseries artisanales', address: 'Quartier Résidentiel', neighborhood: 'Résidentiel', rating: 4.7, reviewCount: 156, deliveryTime: '15-25 min', deliveryFee: 500, minOrder: 500, isOpen: true, emoji: '🥐', featured: false, coverColor: 'from-yellow-500 to-amber-500' },
   { id: 's5', name: 'Grillade Palace', category: 'restaurant', description: 'Poulet braisé, côtes de bœuf, alloco et brochettes', address: 'Quartier Kennedy', neighborhood: 'Kennedy', rating: 4.5, reviewCount: 89, deliveryTime: '30-45 min', deliveryFee: 600, minOrder: 2000, isOpen: true, emoji: '🍗', featured: true, coverColor: 'from-red-500 to-orange-500' },
   { id: 's6', name: 'Bar Glacier Frais', category: 'drinks', description: 'Jus de fruits frais, boissons fraîches, glaces artisanales', address: 'Marché Central', neighborhood: 'Marché', rating: 4.4, reviewCount: 67, deliveryTime: '10-20 min', deliveryFee: 500, minOrder: 1000, isOpen: true, emoji: '🥤', featured: false, coverColor: 'from-purple-500 to-pink-500' },
+  { id: 's7', name: 'Boucherie Chez Koné', category: 'butcher', description: 'Viandes fraîches de qualité — Bœuf, Mouton, Porc, Abats', address: 'Marché Central, Allée des Bouchers', neighborhood: 'Marché', rating: 4.6, reviewCount: 112, deliveryTime: '20-35 min', deliveryFee: 600, minOrder: 2000, isOpen: true, emoji: '🥩', featured: true, coverColor: 'from-red-700 to-rose-600' },
 ];
 
 export const products: Product[] = [
@@ -69,6 +70,17 @@ export const products: Product[] = [
   { id: 'p29', shopId: 's6', name: 'Citronnade Menthe', description: 'Citronnade avec feuilles de menthe', price: 700, category: 'Jus frais', emoji: '🍋', available: true, popular: false },
   { id: 'p30', shopId: 's6', name: 'Glace Vanille (2 boules)', description: 'Glace artisanale vanille', price: 500, category: 'Glaces', emoji: '🍦', available: true, popular: true },
   { id: 'p31', shopId: 's6', name: 'Eau Minérale 1.5L', description: 'Eau minérale naturelle fraîche', price: 500, category: 'Eaux', emoji: '💧', available: true, popular: false },
+
+  // Boucherie Chez Koné (s7)
+  { id: 'p32', shopId: 's7', name: 'Bœuf à Braiser (1kg)', description: 'Viande de bœuf en morceaux pour ragoût ou braisé', price: 3500, category: 'Bœuf', emoji: '🥩', available: true, popular: true },
+  { id: 'p33', shopId: 's7', name: 'Viande Hachée Bœuf (500g)', description: 'Bœuf haché frais du jour', price: 2000, category: 'Bœuf', emoji: '🥩', available: true, popular: true },
+  { id: 'p34', shopId: 's7', name: 'Côtes de Bœuf (1kg)', description: 'Côtes avec os pour bouillon ou grillade', price: 3000, category: 'Bœuf', emoji: '🦴', available: true, popular: false },
+  { id: 'p35', shopId: 's7', name: 'Gigot de Mouton (1kg)', description: 'Mouton frais, idéal pour le garba et les fêtes', price: 4000, category: 'Mouton', emoji: '🐑', available: true, popular: true },
+  { id: 'p36', shopId: 's7', name: 'Mouton Haché (500g)', description: 'Mouton haché frais pour boulettes et sauces', price: 2500, category: 'Mouton', emoji: '🥩', available: true, popular: false },
+  { id: 'p37', shopId: 's7', name: 'Côtelettes de Porc (1kg)', description: 'Côtelettes de porc fraîches pour grillade', price: 2500, category: 'Porc', emoji: '🥓', available: true, popular: true },
+  { id: 'p38', shopId: 's7', name: 'Poulet Entier Vif (2kg~)', description: 'Poulet fermier vif — plumé et vidé à la demande', price: 3000, category: 'Volaille', emoji: '🐓', available: true, popular: true },
+  { id: 'p39', shopId: 's7', name: 'Foie de Bœuf (500g)', description: 'Foie frais riche en fer', price: 1500, category: 'Abats', emoji: '🫀', available: true, popular: false },
+  { id: 'p40', shopId: 's7', name: 'Tripes (500g)', description: 'Tripes nettoyées — pour sauce fétri ou kedjenou', price: 1200, category: 'Abats', emoji: '🍲', available: false, popular: false },
 ];
 
 const fp = (id: string): Product => products.find(p => p.id === id)!;
@@ -86,6 +98,7 @@ export const mockSupplierAccounts: SupplierAccount[] = [
   { id: 'sup4', shopId: 's4', shopName: 'Boulangerie du Roi', ownerName: 'Jean-Pierre Akissi', email: 'boulangerie@express.ci', phone: '+225 07 33 22 11', status: 'active', joinedDate: '2024-03-10', commissionRate: 12, accessCode: 'ROI004' },
   { id: 'sup5', shopId: 's5', shopName: 'Grillade Palace', ownerName: 'Traoré Moussa', email: 'grillade@express.ci', phone: '+225 05 66 77 88', status: 'pending', joinedDate: '2024-06-01', commissionRate: 15, accessCode: 'GRI005' },
   { id: 'sup6', shopId: 's6', shopName: 'Bar Glacier Frais', ownerName: 'Adjoua Nadia', email: 'glacier@express.ci', phone: '+225 01 99 00 11', status: 'suspended', joinedDate: '2024-04-20', commissionRate: 10, accessCode: 'GLA006' },
+  { id: 'sup7', shopId: 's7', shopName: 'Boucherie Chez Koné', ownerName: 'Koné Mamadou', email: 'boucherie@express.ci', phone: '+225 07 55 44 33', status: 'active', joinedDate: '2024-05-12', commissionRate: 12, accessCode: 'KON007' },
 ];
 
 const ago = (m: number) => new Date(Date.now() - m * 60000).toISOString();

@@ -11,7 +11,7 @@ export type OrderStatus =
 
 export type PaymentMethod = 'cash' | 'orange_money' | 'mtn_money';
 export type UserRole = 'customer' | 'delivery' | 'supplier' | 'admin';
-export type ShopCategory = 'restaurant' | 'pharmacy' | 'supermarket' | 'bakery' | 'drinks';
+export type ShopCategory = 'restaurant' | 'pharmacy' | 'supermarket' | 'bakery' | 'drinks' | 'butcher';
 export type OrderType = 'delivery' | 'shopping';
 export type SupplierStatus = 'active' | 'pending' | 'suspended';
 

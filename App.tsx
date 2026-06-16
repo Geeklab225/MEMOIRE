@@ -48,12 +48,13 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
 
 const CAT_ICONS: Record<string, string> = {
   all: '🏪', restaurant: '🍽️', pharmacy: '💊',
-  supermarket: '🛒', bakery: '🥐', drinks: '🥤',
+  supermarket: '🛒', bakery: '🥐', drinks: '🥤', butcher: '🥩',
 };
 
 const CAT_LABELS: Record<string, string> = {
   all: 'Tout', restaurant: 'Restaurants', pharmacy: 'Pharmacies',
   supermarket: 'Supermarchés', bakery: 'Boulangeries', drinks: 'Boissons',
+  butcher: 'Boucheries',
 };
 
 // ─── small reusable pieces ─────────────────────────────────────────────────────
@@ -260,7 +261,7 @@ const HomeView: React.FC<{
         <div>
           <p className="font-black text-gray-900 text-lg mb-3">Commerces partenaires</p>
           <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar mb-4">
-            {['all', 'restaurant', 'pharmacy', 'supermarket', 'bakery', 'drinks'].map(cat => (
+            {['all', 'restaurant', 'butcher', 'pharmacy', 'supermarket', 'bakery', 'drinks'].map(cat => (
               <CategoryBtn key={cat} cat={cat} active={selectedCategory === cat} onClick={() => setSelectedCategory(cat)} />
             ))}
           </div>
