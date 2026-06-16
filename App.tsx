@@ -93,18 +93,17 @@ const ShopCard: React.FC<{ shop: Shop; onClick: () => void }> = ({ shop, onClick
     <div className={`h-28 bg-gradient-to-br ${shop.coverColor} flex items-center justify-center`}>
       <span className="text-5xl">{shop.emoji}</span>
     </div>
-    <div className="p-4">
+    <div className="p-3">
       <div className="flex justify-between items-start mb-1">
         <h3 className="font-bold text-gray-900 text-sm leading-tight">{shop.name}</h3>
-        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ml-2 flex-shrink-0 ${shop.isOpen ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1 flex-shrink-0 ${shop.isOpen ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
           {shop.isOpen ? 'Ouvert' : 'Fermé'}
         </span>
       </div>
-      <p className="text-xs text-gray-400 mb-3 line-clamp-1">{shop.description}</p>
-      <div className="flex items-center justify-between text-xs text-gray-500">
+      <p className="text-[11px] text-gray-400 mb-2 line-clamp-1">{shop.description}</p>
+      <div className="flex items-center gap-2 text-[10px] text-gray-500">
         <span>⭐ {shop.rating}</span>
         <span>⏱️ {shop.deliveryTime}</span>
-        <span className="font-semibold text-primary">Livraison selon quartier</span>
       </div>
     </div>
   </div>
@@ -216,50 +215,53 @@ const HomeView: React.FC<{
 
       <div className="px-4 -mt-6 space-y-6">
         {/* Two service cards */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           {/* Commander en ligne */}
           <div
             onClick={() => setSelectedCategory('all')}
-            className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-all active:scale-[0.97]"
+            className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-all active:scale-[0.97] flex flex-col h-full"
           >
-            <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mb-3">
-              <span className="text-2xl">🛍️</span>
+            <div className="w-11 h-11 bg-green-100 rounded-2xl flex items-center justify-center mb-3">
+              <span className="text-xl">🛍️</span>
             </div>
             <p className="font-black text-gray-900 text-sm leading-tight">Commander en ligne</p>
-            <p className="text-xs text-gray-400 mt-1 leading-tight">Choisissez parmi nos commerces partenaires</p>
+            <p className="text-xs text-gray-400 mt-1 leading-tight">Choisissez parmi nos commerces</p>
           </div>
 
           {/* Faire les courses */}
           <div
             onClick={onGoShopping}
-            className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl p-4 shadow-md cursor-pointer hover:shadow-lg transition-all active:scale-[0.97]"
+            className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl p-4 shadow-md cursor-pointer hover:shadow-lg transition-all active:scale-[0.97] flex flex-col h-full"
           >
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-3">
-              <span className="text-2xl">🛒</span>
+            <div className="w-11 h-11 bg-white/20 rounded-2xl flex items-center justify-center mb-3">
+              <span className="text-xl">🛒</span>
             </div>
             <p className="font-black text-white text-sm leading-tight">Faire mes courses</p>
-            <p className="text-xs text-white/80 mt-1 leading-tight">Notre livreur fait vos achats et vous livre</p>
+            <p className="text-xs text-white/80 mt-1 leading-tight">Le livreur fait vos achats au marché</p>
           </div>
         </div>
 
         {/* How it works — shopping promo */}
-        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4">
-          <p className="font-black text-orange-800 text-sm mb-2">🛒 Comment fonctionne le service Courses ?</p>
-          <div className="space-y-1.5">
+        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-3">
+          <p className="font-black text-orange-800 text-xs mb-2">🛒 Service Courses — comment ça marche ?</p>
+          <div className="grid grid-cols-2 gap-1.5">
             {[
-              '1️⃣  Envoyez votre liste de courses',
-              '2️⃣  Déposez le montant estimé + frais',
-              '3️⃣  Le livreur fait vos achats au marché',
-              '4️⃣  Livraison à domicile + rendu de monnaie',
-            ].map(s => (
-              <p key={s} className="text-xs text-orange-700 font-medium">{s}</p>
+              ['1️⃣', 'Envoyez la liste'],
+              ['2️⃣', 'Déposez l\'acompte'],
+              ['3️⃣', 'Le livreur achète'],
+              ['4️⃣', 'Livraison + monnaie'],
+            ].map(([n, s]) => (
+              <div key={s} className="flex items-center gap-1.5 bg-orange-100/60 rounded-xl px-2 py-1.5">
+                <span className="text-base leading-none">{n}</span>
+                <span className="text-[10px] text-orange-800 font-semibold leading-tight">{s}</span>
+              </div>
             ))}
           </div>
         </div>
 
         {/* Categories */}
         <div>
-          <p className="font-black text-gray-900 text-lg mb-3">Commerces partenaires</p>
+          <p className="font-black text-gray-900 text-base mb-3">Commerces partenaires</p>
           <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar mb-4">
             {['all', 'restaurant', 'butcher', 'pharmacy', 'supermarket', 'bakery', 'drinks'].map(cat => (
               <CategoryBtn key={cat} cat={cat} active={selectedCategory === cat} onClick={() => setSelectedCategory(cat)} />
@@ -270,10 +272,10 @@ const HomeView: React.FC<{
         {/* Featured */}
         {featured.length > 0 && (
           <div>
-            <p className="font-black text-gray-900 text-lg mb-3">⭐ En vedette</p>
-            <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+            <p className="font-black text-gray-900 text-base mb-3">⭐ En vedette</p>
+            <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
               {featured.map(shop => (
-                <div key={shop.id} className="flex-shrink-0 w-52 cursor-pointer" onClick={() => onShopSelect(shop)}>
+                <div key={shop.id} className="flex-shrink-0 w-44 cursor-pointer" onClick={() => onShopSelect(shop)}>
                   <div className={`h-32 bg-gradient-to-br ${shop.coverColor} rounded-2xl flex items-center justify-center mb-2 hover:opacity-90 transition-opacity`}>
                     <span className="text-6xl">{shop.emoji}</span>
                   </div>
@@ -287,14 +289,14 @@ const HomeView: React.FC<{
 
         {/* All */}
         <div>
-          <p className="font-black text-gray-900 text-lg mb-3">Tous les commerces</p>
+          <p className="font-black text-gray-900 text-base mb-3">Tous les commerces</p>
           {filtered.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
               <p className="text-4xl mb-3">🔍</p>
               <p className="font-bold">Aucun résultat</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {others.map(shop => <ShopCard key={shop.id} shop={shop} onClick={() => onShopSelect(shop)} />)}
             </div>
           )}
